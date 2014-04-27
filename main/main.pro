@@ -16,3 +16,7 @@ include(../common.pri)
 # Please do not modify the following two lines. Required for deployment.
 include(cppsrc/qtquick2applicationviewer/qtquick2applicationviewer.pri)
 qtcAddDeployment()
+
+OTHER_FILES += \
+    qmlsrc/code-if-wanna-live/BackgroundBlock.qml \
+    qmlsrc/code-if-wanna-live/BackgroundBlocks.js
