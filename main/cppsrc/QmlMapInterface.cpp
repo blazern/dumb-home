@@ -1,36 +1,64 @@
 #include "QmlMapInterface.h"
 
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif
+
 QmlMapInterface::QmlMapInterface(QObject * parent) :
     QObject(parent),
     MapListener(),
-    map(nullptr)
+    map(nullptr),
+    mapObjects()
 {
 }
 
 void QmlMapInterface::setMap(const Map & map)
 {
     this->map = &map;
+
+    refillMapObjects();
+
     emit mapSetUp();
 }
 
-float QmlMapInterface::getPlayerPositionX() const
+void QmlMapInterface::refillMapObjects()
 {
-    return map != nullptr ? map->getPlayer().getPosition().x() : 0;
-}
+    mapObjects.clear();
 
-float QmlMapInterface::getPlayerPositionY() const
-{
-    return map != nullptr ? map->getPlayer().getPosition().y() : 0;
+    for (int widthIndex = 0; widthIndex < map->getMapWidth(); widthIndex++)
+    {
+        for (int heightIndex = 0; heightIndex < map->getMapHeight(); heightIndex++)
+        {
+            const StaticMapObject * const mapObject =
+                    map->getStaticObjectAt(widthIndex, heightIndex);
+
+            if (mapObject != nullptr)
+            {
+                mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
+                                      new MapObjectQmlWrapper(
+                                          *mapObject,
+                                          map->getStaticMapObjectWidth(),
+                                          map->getStaticMapObjectHeight(),
+                                          this)));
+            }
+        }
+    }
+
+    for (int index = 0; index < map->getDynamicObjectsCount(); index++)
+    {
+        const DynamicMapObject & mapObject = map->getDynamicObject(index);
+        mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(new MapObjectQmlWrapper(mapObject, this)));
+    }
 }
 
 int QmlMapInterface::getWidth() const
 {
-    return map != nullptr ? map->getWidth() : 0;
+    return map != nullptr ? map->getMapWidth() : 0;
 }
 
 int QmlMapInterface::getHeight() const
 {
-    return map != nullptr ? map->getHeight() : 0;
+    return map != nullptr ? map->getMapHeight() : 0;
 }
 
 bool QmlMapInterface::isMapSetUp() const
@@ -38,7 +66,35 @@ bool QmlMapInterface::isMapSetUp() const
     return map != nullptr;
 }
 
-void QmlMapInterface::onPlayerChangedPosition(const QPointF & position)
+int QmlMapInterface::getObjectsCount() const
 {
-    emit playerChangePosition(position.x(), position.y());
+    return mapObjects.size();
+}
+
+MapObjectQmlWrapper * QmlMapInterface::getMapObject(const int index)
+{
+    return mapObjects[index].data();
+}
+
+void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position)
+{
+    long id = -1;
+    for (auto iterator = mapObjects.begin(); iterator != mapObjects.end(); iterator++)
+    {
+        const MapObjectQmlWrapper & mapObjectQmlWrapper = **iterator;
+        if (mapObjectQmlWrapper.isMadeFor(object))
+        {
+            id = mapObjectQmlWrapper.getId();
+            break;
+        }
+    }
+
+#ifdef QT_DEBUG
+    if (id == -1)
+    {
+        qDebug() << "id was not found for some reason!";
+    }
+#endif
+
+    emit objectChangedPosition(id, position.x(), position.y());
 }

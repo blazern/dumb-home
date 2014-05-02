@@ -1,8 +1,9 @@
 #include "Player.h"
 
-Player::Player(const QPointF & position, Mover & mover, QObject * parent) :
+Player::Player(const QRectF & rect, Mover & mover, QObject * parent) :
     QObject(parent),
-    position(position),
+    DynamicMapObject(),
+    rect(rect),
     mover(mover),
     movementDirection(Player::MovementDirection::UP),
     movementTimer()
@@ -29,34 +30,34 @@ void Player::stopMovement()
     movementTimer.stop();
 }
 
-const QPointF & Player::getPosition() const
+const QRectF & Player::getRect() const
 {
-    return position;
+    return rect;
 }
 
 void Player::onMovementTimerTimeout()
 {
-    const qreal distanse = (qreal) timerInterval / (speed * 1000);
+    const qreal distanse = (((qreal) timerInterval) * speed) / 1000;
 
     qreal resultPosition;
 
     switch (movementDirection)
     {
     case MovementDirection::UP:
-        resultPosition = position.y() + distanse;
-        mover.move(*this, QPointF(position.x(), resultPosition));
+        resultPosition = rect.y() + distanse;
+        mover.move(*this, rect.x(), resultPosition);
         break;
     case MovementDirection::RIGHT:
-        resultPosition = position.x() + distanse;
-        mover.move(*this, QPointF(resultPosition, position.y()));
+        resultPosition = rect.x() + distanse;
+        mover.move(*this, resultPosition, rect.y());
         break;
     case MovementDirection::DOWN:
-        resultPosition = position.y() - distanse;
-        mover.move(*this, QPointF(position.x(), resultPosition));
+        resultPosition = rect.y() - distanse;
+        mover.move(*this, rect.x(), resultPosition);
         break;
     case MovementDirection::LEFT:
-        resultPosition = position.x() - distanse;
-        mover.move(*this, QPointF(resultPosition, position.y()));
+        resultPosition = rect.x() - distanse;
+        mover.move(*this, resultPosition, rect.y());
         break;
     }
 }

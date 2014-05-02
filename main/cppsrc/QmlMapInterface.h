@@ -2,8 +2,10 @@
 #define QMLMAPINTERFACE_H
 
 #include <QObject>
-#include "MapListener.h"
-#include "Map.h"
+#include <QSharedPointer>
+#include "map/MapListener.h"
+#include "map/Map.h"
+#include "MapObjectQmlWrapper.h"
 
 class QmlMapInterface : public QObject, public MapListener
 {
@@ -14,20 +16,24 @@ public:
 
     void setMap(const Map & map);
 
-    Q_INVOKABLE float getPlayerPositionX() const;
-    Q_INVOKABLE float getPlayerPositionY() const;
     Q_INVOKABLE int getWidth() const;
     Q_INVOKABLE int getHeight() const;
     Q_INVOKABLE bool isMapSetUp() const;
 
-    virtual void onPlayerChangedPosition(const QPointF & position) final override;
+    Q_INVOKABLE int getObjectsCount() const;
+    Q_INVOKABLE MapObjectQmlWrapper * getMapObject(const int index);
+
+    virtual void onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position) final override;
 
 signals:
-    void playerChangePosition(const qreal x, const qreal y) const;
+    void objectChangedPosition(const long id, const qreal x, const qreal y) const;
     void mapSetUp() const;
 
 private:
     const Map * map;
+    QVector<QSharedPointer<MapObjectQmlWrapper>> mapObjects;
+
+    void refillMapObjects();
 };
 
 #endif // QMLMAPINTERFACE_H

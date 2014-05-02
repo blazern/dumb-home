@@ -2,31 +2,32 @@
 #define PLAYER_H
 
 #include <QObject>
-#include <QPointF>
 #include <QTimer>
-#include "MapObject.h"
+#include <QRectF>
+#include "DynamicMapObject.h"
 #include "Mover.h"
 
-class Player : public QObject, public MapObject
+class Player : public QObject, public DynamicMapObject
 {
     Q_OBJECT
+    Q_DISABLE_COPY(Player)
 public:
     enum class MovementDirection { UP, RIGHT, DOWN, LEFT };
 
-    explicit Player(const QPointF & position, Mover & mover, QObject * parent = 0);
+    explicit Player(const QRectF & rect, Mover & mover, QObject * parent = 0);
 
     void moveTo(const MovementDirection direction);
     void stopMovement();
-    virtual const QPointF & getPosition() const final override;
+    virtual const QRectF & getRect() const final override;
 
 private slots:
     void onMovementTimerTimeout();
 
 private:
-    static constexpr float speed = 0.1f; // 'speed' blocks per second // TODO: wrong, fix speeding agorithm
+    static constexpr float speed = 100.0f; // number per second
     static constexpr int timerInterval = 10;
 
-    const QPointF & position;
+    const QRectF & rect;
     Mover & mover;
     MovementDirection movementDirection;
     QTimer movementTimer;

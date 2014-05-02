@@ -2,7 +2,7 @@
 #define PLAYERACTIONSQMLRECEIVER_H
 
 #include <QObject>
-#include "Map.h"
+#include "map/Map.h"
 
 class PlayerActionsQmlReceiver : public QObject
 {

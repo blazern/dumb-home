@@ -18,5 +18,5 @@ include(cppsrc/qtquick2applicationviewer/qtquick2applicationviewer.pri)
 qtcAddDeployment()
 
 OTHER_FILES += \
-    qmlsrc/code-if-wanna-live/BackgroundBlock.qml \
-    qmlsrc/code-if-wanna-live/BackgroundBlocks.js
+    qmlsrc/code-if-wanna-live/MapObjects.js \
+    qmlsrc/code-if-wanna-live/MapObject.qml

@@ -1,6 +1,6 @@
 import QtQuick 2.0
 import DumbHome 1.0
-import "BackgroundBlocks.js" as BackgroundBlocks
+import "MapObjects.js" as MapObjects
 
 Item {
     id: container
@@ -13,144 +13,63 @@ Item {
     property int direction_down: 2
     property int direction_left: 3
 
-    property Player player
+    property int pressedKeysCount: 0
 
-    Rectangle {
-        width: 100
-        height: 100
-        color: "blue"
-        x: 150
-        y: 40
-
-        Text {
-            text: "up"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                playerActionsReceiver.onMoveRequested(direction_down);
-            }
-            onReleased: {
-                playerActionsReceiver.onMoveStopRequested();
-            }
-        }
-    }
-
-    Rectangle {
-        width: 100
-        height: 100
-        color: "blue"
-        x: 150
-        y: 160
-
-        Text {
-            text: "down"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                playerActionsReceiver.onMoveRequested(direction_up);
-            }
-            onReleased: {
-                playerActionsReceiver.onMoveStopRequested();
-            }
-        }
-    }
-
-    Rectangle {
-        width: 100
-        height: 100
-        color: "blue"
-        x: 40
-        y: 160
-
-        Text {
-            text: "left"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                playerActionsReceiver.onMoveRequested(direction_left);
-            }
-            onReleased: {
-                playerActionsReceiver.onMoveStopRequested();
-            }
-        }
-    }
-
-    Rectangle {
-        width: 100
-        height: 100
-        color: "blue"
-        x: 260
-        y: 160
-
-        Text {
-            text: "right"
-        }
-
-        MouseArea {
-            anchors.fill: parent
-            onPressed: {
-                playerActionsReceiver.onMoveRequested(direction_right);
-            }
-            onReleased: {
-                playerActionsReceiver.onMoveStopRequested();
-            }
-        }
+    SensorControls {
     }
 
     Keys.onPressed: {
         switch (event.key) {
         case Qt.Key_Up:
+            pressedKeysCount++;
             playerActionsReceiver.onMoveRequested(direction_down);
             break;
         case Qt.Key_Right:
+            pressedKeysCount++;
             playerActionsReceiver.onMoveRequested(direction_right);
             break;
         case Qt.Key_Down:
+            pressedKeysCount++;
             playerActionsReceiver.onMoveRequested(direction_up);
             break;
         case Qt.Key_Left:
+            pressedKeysCount++;
             playerActionsReceiver.onMoveRequested(direction_left);
             break;
         }
     }
 
     Keys.onReleased: {
-        playerActionsReceiver.onMoveStopRequested();
+        pressedKeysCount--;
+        if (pressedKeysCount == 0) {
+            playerActionsReceiver.onMoveStopRequested();
+        }
     }
 
-    function createElement(hor, ver, componentUrl) {
-        var component = Qt.createComponent(componentUrl);
+    function createElementFrom(mapObject) {
+        var component = Qt.createComponent("MapObject.qml");
         if (component.status === Component.Ready) {
             var element = component.createObject(container);
-            element.x = hor * 11;
-            element.y = ver * 11;
+            element.x = mapObject.x;
+            element.y = mapObject.y;
+            element.width = mapObject.width;
+            element.height = mapObject.height;
+            element.color = mapObject.color;
+            element.mapObjectId = mapObject.id;
             return element;
         }
     }
 
     function setUpGraphicalMap() {
-        for (var i = 0; i < BackgroundBlocks.size(); i++) {
-            BackgroundBlocks.get(i).destroy();
+        for (var i = 0; i < MapObjects.size(); i++) {
+            MapObjects.get(i).destroy();
         }
-        BackgroundBlocks.clear();
+        MapObjects.clear();
 
-        for (var hor = 0; hor < qmlMapInterface.getWidth(); hor++) {
-            for (var ver = 0; ver < qmlMapInterface.getWidth(); ver++) {
-                BackgroundBlocks.add(createElement(hor, ver, "BackgroundBlock.qml"));
-            }
+        for (var index = 0; index < qmlMapInterface.getObjectsCount(); index++) {
+            var mapObject = qmlMapInterface.getMapObject(index);
+            MapObjects.add(createElementFrom(mapObject));
         }
-
-        player =
-                createElement(
-                    qmlMapInterface.getPlayerPositionX(),
-                    qmlMapInterface.getPlayerPositionX(),
-                    "Player.qml");
     }
 
     Component.onCompleted: {
@@ -166,9 +85,16 @@ Item {
             setUpGraphicalMap();
         }
 
-        onPlayerChangePosition: {
-            player.x = 11 * x;
-            player.y = 11 * y;
+        onObjectChangedPosition: {
+            for (var index = 0; index < MapObjects.size(); index++) {
+                var mapObject = MapObjects.get(index);
+
+                if (mapObject.mapObjectId == id) {
+                    mapObject.x = x;
+                    mapObject.y = y;
+                    return;
+                }
+            }
         }
     }
 }
