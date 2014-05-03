@@ -1,6 +1,6 @@
 #include "MapObjectQmlWrapper.h"
 
-long MapObjectQmlWrapper::nextId(0);
+unsigned int MapObjectQmlWrapper::nextId(1);
 
 MapObjectQmlWrapper::MapObjectQmlWrapper(QObject * parent) :
     QObject(parent),
@@ -39,7 +39,7 @@ MapObjectQmlWrapper::MapObjectQmlWrapper(
 {
 }
 
-long MapObjectQmlWrapper::getId() const
+unsigned int MapObjectQmlWrapper::getId() const
 {
     return id;
 }

@@ -12,7 +12,7 @@ class MapObjectQmlWrapper : public QObject
     Q_OBJECT
     Q_DISABLE_COPY(MapObjectQmlWrapper)
 public:
-    Q_PROPERTY(long id READ getId CONSTANT FINAL)
+    Q_PROPERTY(unsigned int id READ getId CONSTANT FINAL)
     Q_PROPERTY(QColor color READ getColor CONSTANT FINAL)
     Q_PROPERTY(qreal x READ getX FINAL)
     Q_PROPERTY(qreal y READ getY FINAL)
@@ -26,7 +26,7 @@ public:
                                  const qreal height,
                                  QObject * parent = 0);
 
-    long getId() const;
+    unsigned int getId() const;
     const QColor & getColor() const;
     qreal getX() const;
     qreal getY() const;
@@ -36,10 +36,10 @@ public:
     bool isMadeFor(const DynamicMapObject & mapObject) const;
 
 private:
-    static long nextId;
+    static unsigned int nextId;
 
 private:
-    const long id;
+    const unsigned int id;
     const QColor color;
     const DynamicMapObject * const dynamicMapObject;
     const StaticMapObject * const staticMapObject;

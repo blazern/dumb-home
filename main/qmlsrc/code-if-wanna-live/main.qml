@@ -89,7 +89,7 @@ Item {
             for (var index = 0; index < MapObjects.size(); index++) {
                 var mapObject = MapObjects.get(index);
 
-                if (mapObject.mapObjectId == id) {
+                if (mapObject.mapObjectId === id) {
                     mapObject.x = x;
                     mapObject.y = y;
                     return;

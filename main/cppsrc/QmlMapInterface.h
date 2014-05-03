@@ -22,15 +22,17 @@ public:
 
     Q_INVOKABLE int getObjectsCount() const;
     Q_INVOKABLE MapObjectQmlWrapper * getMapObject(const int index);
+    Q_INVOKABLE unsigned int getPlayerId() const;
 
     virtual void onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position) final override;
 
 signals:
-    void objectChangedPosition(const long id, const qreal x, const qreal y) const;
+    void objectChangedPosition(const unsigned int id, const qreal x, const qreal y) const;
     void mapSetUp() const;
 
 private:
     const Map * map;
+    unsigned int playerId;
     QVector<QSharedPointer<MapObjectQmlWrapper>> mapObjects;
 
     void refillMapObjects();

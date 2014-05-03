@@ -8,6 +8,7 @@ QmlMapInterface::QmlMapInterface(QObject * parent) :
     QObject(parent),
     MapListener(),
     map(nullptr),
+    playerId(0),
     mapObjects()
 {
 }
@@ -23,6 +24,7 @@ void QmlMapInterface::setMap(const Map & map)
 
 void QmlMapInterface::refillMapObjects()
 {
+    playerId = 0;
     mapObjects.clear();
 
     for (int widthIndex = 0; widthIndex < map->getMapWidth(); widthIndex++)
@@ -48,6 +50,11 @@ void QmlMapInterface::refillMapObjects()
     {
         const DynamicMapObject & mapObject = map->getDynamicObject(index);
         mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(new MapObjectQmlWrapper(mapObject, this)));
+
+        if (&mapObject == &(map->getPlayer()))
+        {
+            playerId = mapObjects.last()->getId();
+        }
     }
 }
 
@@ -76,9 +83,14 @@ MapObjectQmlWrapper * QmlMapInterface::getMapObject(const int index)
     return mapObjects[index].data();
 }
 
+unsigned int QmlMapInterface::getPlayerId() const
+{
+    return playerId;
+}
+
 void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position)
 {
-    long id = -1;
+    unsigned int id = 0;
     for (auto iterator = mapObjects.begin(); iterator != mapObjects.end(); iterator++)
     {
         const MapObjectQmlWrapper & mapObjectQmlWrapper = **iterator;
@@ -90,7 +102,7 @@ void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, c
     }
 
 #ifdef QT_DEBUG
-    if (id == -1)
+    if (id == 0)
     {
         qDebug() << "id was not found for some reason!";
     }
