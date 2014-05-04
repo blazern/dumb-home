@@ -2,66 +2,22 @@
 #include "StaticMapObjectImpl.h"
 #include <math.h>
 
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif
+
 Map::Map(const int width, const int height, const qreal staticMapObjectSize) :
+    staticLayer(width, height),
     staticMapObjectWidth(staticMapObjectSize),
     staticMapObjectHeight(staticMapObjectSize),
-    playerRect(
-        (2) * staticMapObjectSize,
-        (2) * staticMapObjectSize,
-        staticMapObjectSize * 2,
-        staticMapObjectSize * 2),
-    player(playerRect, *this),
-    staticObjects(),
+    dynamicLayer(QRectF(20, 20, 10, 10), *this),
     listeners()
 {
-    for (int widthIndex = 0; widthIndex < width; widthIndex++)
-    {
-        staticObjects.append(QVector<QSharedPointer<StaticMapObject>>());
-        for (int heightIndex = 0; heightIndex < height; heightIndex++)
-        {
-            if (widthIndex == 0 || heightIndex == 0 || widthIndex == width - 1 || heightIndex == height - 1 || widthIndex == height - heightIndex)
-            {
-                staticObjects[widthIndex].append(
-                            QSharedPointer<StaticMapObject>(new StaticMapObjectImpl(QPoint(widthIndex, heightIndex))));
-            }
-            else
-            {
-                staticObjects[widthIndex].append(QSharedPointer<StaticMapObject>(nullptr));
-            }
-        }
-    }
 }
 
-const DynamicMapObject & Map::getDynamicObject(const int index) const
+const StaticMapLayer & Map::getStaticLayer() const
 {
-    if (index == 0)
-    {
-        return player;
-    }
-    else
-    {
-        abort();
-    }
-}
-
-int Map::getDynamicObjectsCount() const
-{
-    return 1;
-}
-
-const Player & Map::getPlayer() const
-{
-    return player;
-}
-
-Player & Map::getPlayer()
-{
-    return player;
-}
-
-const StaticMapObject * Map::getStaticObjectAt(const int x, const int y) const
-{
-    return staticObjects[x][y].data();
+    return staticLayer;
 }
 
 qreal Map::getStaticMapObjectWidth() const
@@ -74,14 +30,22 @@ qreal Map::getStaticMapObjectHeight() const
     return staticMapObjectHeight;
 }
 
-int Map::getMapWidth() const
+const QRectF Map::getRectOfStaticObjectWith(const int horPos, const int verPos) const
 {
-    return staticObjects.size();
+    return QRectF(horPos * staticMapObjectWidth,
+                  verPos * staticMapObjectHeight,
+                  staticMapObjectWidth,
+                  staticMapObjectHeight);
 }
 
-int Map::getMapHeight() const
+const DynamicMapLayer & Map::getDynamicLayer() const
 {
-    return staticObjects[0].size();
+    return dynamicLayer;
+}
+
+DynamicMapLayer & Map::getDynamicLayer()
+{
+    return dynamicLayer;
 }
 
 void Map::addListener(MapListener & listener)
@@ -104,22 +68,41 @@ void Map::removeListener(MapListener & listener)
 
 void Map::move(const DynamicMapObject & mapObject, const qreal toX, const qreal toY)
 {
-    if (&mapObject == &player)
+    DynamicMapObjectGeometry * requester = nullptr;
+    for (auto iterator = dynamicLayer.begin(); iterator != dynamicLayer.end(); iterator++)
     {
-        if (isNewPositionValid(playerRect, toX, toY))
+        QSharedPointer<DynamicMapObjectGeometry> & object = *iterator;
+
+        if (object->getObject() == &mapObject)
         {
-            const qreal oldWidth = playerRect.width();
-            const qreal oldHeight = playerRect.height();
-            playerRect.setX(toX);
-            playerRect.setWidth(oldWidth);
-            playerRect.setY(toY);
-            playerRect.setHeight(oldHeight);
+            requester = object.data();
+        }
+    }
+
+
+    if (requester != nullptr)
+    {
+        QRectF & rect = requester->getRect();
+        if (isNewPositionValid(rect, toX, toY))
+        {
+            const qreal oldWidth = rect.width();
+            const qreal oldHeight = rect.height();
+            rect.setX(toX);
+            rect.setWidth(oldWidth);
+            rect.setY(toY);
+            rect.setHeight(oldHeight);
             for (auto & listener : listeners)
             {
-                listener->onObjectChangedPosition(player, playerRect.topLeft());
+                listener->onObjectChangedPosition(*(requester->getObject()), rect.topLeft());
             }
         }
     }
+#ifdef QT_DEBUG
+    else
+    {
+        qDebug() << "requester of move() was not found for some reason";
+    }
+#endif
 }
 
 bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) const
@@ -137,7 +120,7 @@ bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) 
         {
             for (int ver = top; ver <= bottom; ver++)
             {
-                if (!staticObjects[hor][ver].isNull())
+                if (staticLayer.get(hor, ver) != nullptr)
                 {
                     return false;
                 }
@@ -155,6 +138,6 @@ bool Map::isRectangleWithNewPositionValid(const QRectF & rect, const qreal x, co
 {
     return 0 <= x
             && 0 <= y
-            && x + rect.width() <= getMapWidth() * staticMapObjectWidth
-            && y + rect.height() <= getMapHeight() * staticMapObjectHeight;
+            && x + rect.width() <= staticLayer.getWidth() * staticMapObjectWidth
+            && y + rect.height() <= staticLayer.getHeight() * staticMapObjectHeight;
 }

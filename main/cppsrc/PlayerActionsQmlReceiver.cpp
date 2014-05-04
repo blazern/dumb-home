@@ -8,7 +8,7 @@ PlayerActionsQmlReceiver::PlayerActionsQmlReceiver(Map & map, QObject * parent) 
 
 void PlayerActionsQmlReceiver::onMoveRequested(const int direction)
 {
-    Player & player = map.getPlayer();
+    Player & player = map.getDynamicLayer().getPlayer();
 
     switch (direction)
     {
@@ -29,5 +29,5 @@ void PlayerActionsQmlReceiver::onMoveRequested(const int direction)
 
 void PlayerActionsQmlReceiver::onMoveStopRequested()
 {
-    map.getPlayer().stopMovement();
+    map.getDynamicLayer().getPlayer().stopMovement();
 }

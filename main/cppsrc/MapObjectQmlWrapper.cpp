@@ -9,7 +9,9 @@ MapObjectQmlWrapper::MapObjectQmlWrapper(QObject * parent) :
     dynamicMapObject(nullptr),
     staticMapObject(nullptr),
     width(1),
-    height(1)
+    height(1),
+    staticObjectX(0),
+    staticObjectY(0)
 {
 }
 
@@ -20,22 +22,25 @@ MapObjectQmlWrapper::MapObjectQmlWrapper(const DynamicMapObject & dynamicMapObje
     dynamicMapObject(&dynamicMapObject),
     staticMapObject(nullptr),
     width(dynamicMapObject.getRect().width()),
-    height(dynamicMapObject.getRect().height())
+    height(dynamicMapObject.getRect().height()),
+    staticObjectX(-1),
+    staticObjectY(-1)
 {
 }
 
 MapObjectQmlWrapper::MapObjectQmlWrapper(
         const StaticMapObject & staticMapObject,
-        const qreal width,
-        const qreal height,
+        const QRectF & rect,
         QObject * parent) :
     QObject(parent),
     id(nextId++),
     color("red"),
     dynamicMapObject(nullptr),
     staticMapObject(&staticMapObject),
-    width(width),
-    height(height)
+    width(rect.width()),
+    height(rect.height()),
+    staticObjectX(rect.x()),
+    staticObjectY(rect.y())
 {
 }
 
@@ -57,7 +62,7 @@ qreal MapObjectQmlWrapper::getX() const
     }
     else if (staticMapObject != nullptr)
     {
-        return staticMapObject->getPosition().x() * width;
+        return staticObjectX;
     }
     else
     {
@@ -73,7 +78,7 @@ qreal MapObjectQmlWrapper::getY() const
     }
     else if (staticMapObject != nullptr)
     {
-        return staticMapObject->getPosition().y() * height;
+        return staticObjectY;
     }
     else
     {

@@ -8,7 +8,10 @@ SOURCES += \
     $$PWD/main/cppsrc/map/Player.cpp \
     $$PWD/main/cppsrc/QmlMapInterface.cpp \
     $$PWD/main/cppsrc/MapObjectQmlWrapper.cpp \
-    $$PWD/main/cppsrc/map/StaticMapObjectImpl.cpp
+    $$PWD/main/cppsrc/map/StaticMapObjectImpl.cpp \
+    $$PWD/main/cppsrc/map/StaticMapLayer.cpp \
+    $$PWD/main/cppsrc/map/DynamicMapLayer.cpp \
+    $$PWD/main/cppsrc/map/DynamicMapObjectGeometry.cpp
 
 HEADERS += \
     $$PWD/main/cppsrc/PlayerActionsQmlReceiver.h \
@@ -20,4 +23,7 @@ HEADERS += \
     $$PWD/main/cppsrc/QmlMapInterface.h \
     $$PWD/main/cppsrc/map/StaticMapObject.h \
     $$PWD/main/cppsrc/MapObjectQmlWrapper.h \
-    $$PWD/main/cppsrc/map/StaticMapObjectImpl.h
+    $$PWD/main/cppsrc/map/StaticMapObjectImpl.h \
+    $$PWD/main/cppsrc/map/StaticMapLayer.h \
+    $$PWD/main/cppsrc/map/DynamicMapLayer.h \
+    $$PWD/main/cppsrc/map/DynamicMapObjectGeometry.h

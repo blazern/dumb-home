@@ -1,11 +1,6 @@
 #include "StaticMapObjectImpl.h"
 
-StaticMapObjectImpl::StaticMapObjectImpl(const QPoint & position) :
-    position(position)
+StaticMapObjectImpl::StaticMapObjectImpl() :
+    StaticMapObject()
 {
-}
-
-const QPoint & StaticMapObjectImpl::getPosition() const
-{
-    return position;
 }

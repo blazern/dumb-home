@@ -19,7 +19,6 @@ public:
     Q_INVOKABLE int getWidth() const;
     Q_INVOKABLE int getHeight() const;
     Q_INVOKABLE bool isMapSetUp() const;
-
     Q_INVOKABLE int getObjectsCount() const;
     Q_INVOKABLE MapObjectQmlWrapper * getMapObject(const int index);
     Q_INVOKABLE unsigned int getPlayerId() const;

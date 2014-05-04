@@ -7,9 +7,9 @@
 #include <QPoint>
 #include <QSharedPointer>
 #include "Mover.h"
-#include "Player.h"
 #include "MapListener.h"
-#include "StaticMapObject.h"
+#include "StaticMapLayer.h"
+#include "DynamicMapLayer.h"
 
 class Map : public Mover
 {
@@ -17,17 +17,13 @@ class Map : public Mover
 public:
     explicit Map(const int width, const int height, const qreal staticMapObjectSize);
 
-    const DynamicMapObject & getDynamicObject(const int index) const;
-    int getDynamicObjectsCount() const;
-    const Player & getPlayer() const;
-    Player & getPlayer();
-
-    const StaticMapObject * getStaticObjectAt(const int x, const int y) const;
+    const StaticMapLayer & getStaticLayer() const;
     qreal getStaticMapObjectWidth() const;
     qreal getStaticMapObjectHeight() const;
+    const QRectF getRectOfStaticObjectWith(const int horPos, const int verPos) const;
 
-    int getMapWidth() const;
-    int getMapHeight() const;
+    const DynamicMapLayer & getDynamicLayer() const;
+    DynamicMapLayer & getDynamicLayer();
 
     void addListener(MapListener & listener);
     void removeListener(MapListener & listener);
@@ -36,13 +32,11 @@ protected:
     virtual void move(const DynamicMapObject & mapObject, const qreal toX, const qreal toY) final override;
 
 private:
+    StaticMapLayer staticLayer;
     const qreal staticMapObjectWidth;
     const qreal staticMapObjectHeight;
 
-    QRectF playerRect;
-    Player player;
-
-    QVector<QVector<QSharedPointer<StaticMapObject>>> staticObjects;
+    DynamicMapLayer dynamicLayer;
 
     QVector<MapListener*> listeners;
 

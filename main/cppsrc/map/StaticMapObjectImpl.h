@@ -7,12 +7,7 @@
 class StaticMapObjectImpl : public StaticMapObject
 {
 public:
-    StaticMapObjectImpl(const QPoint & position);
-
-    virtual const QPoint & getPosition() const final override;
-
-private:
-    const QPoint position;
+    explicit StaticMapObjectImpl();
 };
 
 #endif // STATICMAPOBJECTIMPL_H

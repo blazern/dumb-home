@@ -22,8 +22,7 @@ public:
     explicit MapObjectQmlWrapper(QObject * parent = 0); // required by QML
     explicit MapObjectQmlWrapper(const DynamicMapObject & dynamicMapObject, QObject * parent = 0);
     explicit MapObjectQmlWrapper(const StaticMapObject & staticMapObject,
-                                 const qreal width,
-                                 const qreal height,
+                                 const QRectF & rect,
                                  QObject * parent = 0);
 
     unsigned int getId() const;
@@ -45,6 +44,8 @@ private:
     const StaticMapObject * const staticMapObject;
     const qreal width;
     const qreal height;
+    const qreal staticObjectX;
+    const qreal staticObjectY;
 };
 
 #endif // MAPOBJECTQMLWRAPPER_H

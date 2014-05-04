@@ -6,7 +6,6 @@
 class StaticMapObject
 {
 public:
-    virtual const QPoint & getPosition() const = 0;
     virtual ~StaticMapObject(){}
 };
 

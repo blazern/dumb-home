@@ -27,31 +27,38 @@ void QmlMapInterface::refillMapObjects()
     playerId = 0;
     mapObjects.clear();
 
-    for (int widthIndex = 0; widthIndex < map->getMapWidth(); widthIndex++)
+    const int mapWidth = map->getStaticLayer().getWidth();
+    const int mapHeight = map->getStaticLayer().getHeight();
+    const StaticMapLayer & staticMapLayer = map->getStaticLayer();
+
+    for (int widthIndex = 0; widthIndex < mapWidth; widthIndex++)
     {
-        for (int heightIndex = 0; heightIndex < map->getMapHeight(); heightIndex++)
+        for (int heightIndex = 0; heightIndex < mapHeight; heightIndex++)
         {
             const StaticMapObject * const mapObject =
-                    map->getStaticObjectAt(widthIndex, heightIndex);
+                    staticMapLayer.get(widthIndex, heightIndex);
 
             if (mapObject != nullptr)
             {
                 mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
                                       new MapObjectQmlWrapper(
                                           *mapObject,
-                                          map->getStaticMapObjectWidth(),
-                                          map->getStaticMapObjectHeight(),
+                                          map->getRectOfStaticObjectWith(widthIndex, heightIndex),
                                           this)));
             }
         }
     }
 
-    for (int index = 0; index < map->getDynamicObjectsCount(); index++)
+    const DynamicMapLayer & dynamicMapLayer = map->getDynamicLayer();
+
+    for (auto iterator = dynamicMapLayer.constBegin(); iterator != dynamicMapLayer.constEnd(); iterator++)
     {
-        const DynamicMapObject & mapObject = map->getDynamicObject(index);
+        const QSharedPointer<DynamicMapObjectGeometry> & mapObjectGeometry = *iterator;
+
+        const DynamicMapObject & mapObject = *mapObjectGeometry->getObject();
         mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(new MapObjectQmlWrapper(mapObject, this)));
 
-        if (&mapObject == &(map->getPlayer()))
+        if (&mapObject == &(dynamicMapLayer.getPlayer()))
         {
             playerId = mapObjects.last()->getId();
         }
@@ -60,12 +67,12 @@ void QmlMapInterface::refillMapObjects()
 
 int QmlMapInterface::getWidth() const
 {
-    return map != nullptr ? map->getMapWidth() : 0;
+    return map != nullptr ? map->getStaticLayer().getWidth() : 0;
 }
 
 int QmlMapInterface::getHeight() const
 {
-    return map != nullptr ? map->getMapHeight() : 0;
+    return map != nullptr ? map->getStaticLayer().getHeight() : 0;
 }
 
 bool QmlMapInterface::isMapSetUp() const
