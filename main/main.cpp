@@ -2,11 +2,18 @@
 #include <QQmlContext>
 #include <QtQml>
 #include <QQuickItem>
+#include <QUrl>
+#include <QDir>
 #include "cppsrc/qtquick2applicationviewer/qtquick2applicationviewer.h"
 #include "cppsrc/PlayerActionsQmlReceiver.h"
 #include "cppsrc/QmlMapInterface.h"
 #include "cppsrc/map/DynamicMapObject.h"
 #include "cppsrc/MapObjectQmlWrapper.h"
+#include "cppsrc/json/JsonMapParser.h"
+
+#ifdef QT_DEBUG
+#include <QDebug>
+#endif
 
 int main(int argc, char *argv[])
 {
@@ -19,9 +26,23 @@ int main(int argc, char *argv[])
     viewer.setMainQmlFile(QStringLiteral("qmlsrc/code-if-wanna-live/main.qml"));
     viewer.showExpanded();
 
-    Map map(10, 10, 10);
+    const JsonMapParser mapParser;
 
-    PlayerActionsQmlReceiver playerActionsQmlReceiver(map);
+    const QUrl defaultUrl(QUrl::fromLocalFile(QString() + "resources" + QDir::separator() + "map.json"));
+
+    QSharedPointer<Map> map;
+
+    try
+    {
+        map.reset(mapParser.parse(defaultUrl));
+    }
+    catch (std::invalid_argument & exception)
+    {
+        qDebug() << exception.what();
+        return -1;
+    }
+
+    PlayerActionsQmlReceiver playerActionsQmlReceiver(*map);
     viewer.rootContext()->setContextProperty("playerActionsReceiver", &playerActionsQmlReceiver);
 
     QmlMapInterface * const qmlMapInterface =
@@ -29,8 +50,8 @@ int main(int argc, char *argv[])
 
     if (qmlMapInterface != nullptr)
     {
-        qmlMapInterface->setMap(map);
-        map.addListener(*qmlMapInterface);
+        qmlMapInterface->setMap(*map);
+        map->addListener(*qmlMapInterface);
     }
 
     return app.exec();

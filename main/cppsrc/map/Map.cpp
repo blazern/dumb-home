@@ -6,18 +6,34 @@
 #include <QDebug>
 #endif
 
-Map::Map(const int width, const int height, const qreal staticMapObjectSize) :
-    staticLayer(width, height),
-    staticMapObjectWidth(staticMapObjectSize),
-    staticMapObjectHeight(staticMapObjectSize),
-    dynamicLayer(QRectF(20, 20, 10, 10), *this),
+Map::Map(StaticMapLayer * staticLayer, DynamicMapLayer * dynamicLayer, const qreal staticObjectWidth, const qreal staticObjectHeight) :
+    staticLayer(staticLayer),
+    staticMapObjectWidth(staticObjectWidth),
+    staticMapObjectHeight(staticObjectHeight),
+    dynamicLayer(dynamicLayer),
+    listeners()
+{
+    dynamicLayer->getPlayer().setMover(*this);
+}
+
+Map::Map(const int width, const int height, const qreal staticMapObjectWidth, const qreal staticMapObjectHeight) :
+    staticLayer(new StaticMapLayer(width, height)),
+    staticMapObjectWidth(staticMapObjectWidth),
+    staticMapObjectHeight(staticMapObjectHeight),
+    dynamicLayer(new DynamicMapLayer(QRectF(20, 20, 10, 10), this)),
     listeners()
 {
 }
 
+Map::~Map()
+{
+    delete staticLayer;
+    delete dynamicLayer;
+}
+
 const StaticMapLayer & Map::getStaticLayer() const
 {
-    return staticLayer;
+    return *staticLayer;
 }
 
 qreal Map::getStaticMapObjectWidth() const
@@ -40,12 +56,12 @@ const QRectF Map::getRectOfStaticObjectWith(const int horPos, const int verPos) 
 
 const DynamicMapLayer & Map::getDynamicLayer() const
 {
-    return dynamicLayer;
+    return *dynamicLayer;
 }
 
 DynamicMapLayer & Map::getDynamicLayer()
 {
-    return dynamicLayer;
+    return *dynamicLayer;
 }
 
 void Map::addListener(MapListener & listener)
@@ -69,7 +85,7 @@ void Map::removeListener(MapListener & listener)
 void Map::move(const DynamicMapObject & mapObject, const qreal toX, const qreal toY)
 {
     DynamicMapObjectGeometry * requester = nullptr;
-    for (auto iterator = dynamicLayer.begin(); iterator != dynamicLayer.end(); iterator++)
+    for (auto iterator = dynamicLayer->begin(); iterator != dynamicLayer->end(); iterator++)
     {
         QSharedPointer<DynamicMapObjectGeometry> & object = *iterator;
 
@@ -120,7 +136,7 @@ bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) 
         {
             for (int ver = top; ver <= bottom; ver++)
             {
-                if (staticLayer.get(hor, ver) != nullptr)
+                if (staticLayer->get(hor, ver) != nullptr)
                 {
                     return false;
                 }
@@ -138,6 +154,6 @@ bool Map::isRectangleWithNewPositionValid(const QRectF & rect, const qreal x, co
 {
     return 0 <= x
             && 0 <= y
-            && x + rect.width() <= staticLayer.getWidth() * staticMapObjectWidth
-            && y + rect.height() <= staticLayer.getHeight() * staticMapObjectHeight;
+            && x + rect.width() <= staticLayer->getWidth() * staticMapObjectWidth
+            && y + rect.height() <= staticLayer->getHeight() * staticMapObjectHeight;
 }

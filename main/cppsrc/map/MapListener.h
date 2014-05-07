@@ -7,6 +7,7 @@
 class MapListener
 {
 public:
+    virtual ~MapListener(){}
     // just "object" because StaticObjects can't change their position yet
     virtual void onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position) = 0;
 };

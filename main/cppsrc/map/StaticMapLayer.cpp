@@ -1,6 +1,11 @@
 #include "StaticMapLayer.h"
 #include "StaticMapObjectImpl.h"
 
+StaticMapLayer::StaticMapLayer(const QVector<QVector<QSharedPointer<StaticMapObject>>> & staticObjects) :
+    staticObjects(staticObjects)
+{
+}
+
 StaticMapLayer::StaticMapLayer(const int width, const int height) :
     staticObjects()
 {

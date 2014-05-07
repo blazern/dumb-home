@@ -12,7 +12,7 @@
 class DynamicMapLayer
 {
 public:
-    explicit DynamicMapLayer(const QRectF & playerRect, Mover & mover);
+    explicit DynamicMapLayer(const QRectF & playerRect, Mover * mover = nullptr);
 
     const Player & getPlayer() const;
     Player & getPlayer();

@@ -1,7 +1,10 @@
 # Add more folders to ship with the application, here
 folder_01.source = qmlsrc/code-if-wanna-live
 folder_01.target = qmlsrc
-DEPLOYMENTFOLDERS = folder_01
+folder_02.source = resources
+DEPLOYMENTFOLDERS += \
+    folder_01 \
+    folder_02
 
 # Additional import path used to resolve QML modules in Creator's code model
 QML_IMPORT_PATH =
@@ -19,4 +22,5 @@ qtcAddDeployment()
 
 OTHER_FILES += \
     qmlsrc/code-if-wanna-live/MapObjects.js \
-    qmlsrc/code-if-wanna-live/MapObject.qml
+    qmlsrc/code-if-wanna-live/MapObject.qml \
+    resources/map.json

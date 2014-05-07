@@ -4,13 +4,21 @@
 #include <QDebug>
 #endif
 
-DynamicMapLayer::DynamicMapLayer(const QRectF & playerRect, Mover & mover) :
+
+DynamicMapLayer::DynamicMapLayer(const QRectF & playerRect, Mover * mover) :
     objects(),
     player(nullptr)
 {
     auto initializer = [this, &mover](const QRectF & rect)->DynamicMapObject*
     {
-        this->player = new Player(rect, mover);
+        if (mover != nullptr)
+        {
+            this->player = new Player(rect, *mover);
+        }
+        else
+        {
+            this->player = new Player(rect);
+        }
         return this->player;
     };
 

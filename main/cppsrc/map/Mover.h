@@ -8,6 +8,9 @@ class Mover
 {
     friend class DynamicMapObject;
     friend class Player;
+public:
+    virtual ~Mover(){}
+
 protected:
     virtual void move(const DynamicMapObject & mapObject, const qreal toX, const qreal toY) = 0;
 };

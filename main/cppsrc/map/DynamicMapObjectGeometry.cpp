@@ -2,9 +2,6 @@
 
 DynamicMapObjectGeometry::~DynamicMapObjectGeometry()
 {
-    if (dynamicMapObject != nullptr)
-    {
-        delete dynamicMapObject;
-    }
+    delete dynamicMapObject;
 }
 

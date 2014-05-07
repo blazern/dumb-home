@@ -15,6 +15,9 @@ public:
     enum class MovementDirection { UP, RIGHT, DOWN, LEFT };
 
     explicit Player(const QRectF & rect, Mover & mover, QObject * parent = 0);
+    explicit Player(const QRectF & rect, QObject * parent = 0);
+
+    void setMover(Mover & mover);
 
     void moveTo(const MovementDirection direction);
     void stopMovement();
@@ -28,9 +31,12 @@ private:
     static constexpr int timerInterval = 10;
 
     const QRectF & rect;
-    Mover & mover;
+    Mover * mover;
     MovementDirection movementDirection;
     QTimer movementTimer;
+
+private:
+    explicit Player(const QRectF & rect, Mover * mover, QObject * parent);
 };
 
 #endif // PLAYER_H

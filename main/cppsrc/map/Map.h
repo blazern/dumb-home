@@ -15,7 +15,12 @@ class Map : public Mover
 {
     Q_DISABLE_COPY(Map)
 public:
-    explicit Map(const int width, const int height, const qreal staticMapObjectSize);
+    explicit Map(StaticMapLayer * staticLayer,
+                 DynamicMapLayer * dynamicLayer,
+                 const qreal staticObjectWidth,
+                 const qreal staticObjectHeight);
+    explicit Map(const int width, const int height, const qreal staticMapObjectWidth, const qreal staticMapObjectHeight);
+    virtual ~Map();
 
     const StaticMapLayer & getStaticLayer() const;
     qreal getStaticMapObjectWidth() const;
@@ -32,11 +37,11 @@ protected:
     virtual void move(const DynamicMapObject & mapObject, const qreal toX, const qreal toY) final override;
 
 private:
-    StaticMapLayer staticLayer;
+    StaticMapLayer * staticLayer;
     const qreal staticMapObjectWidth;
     const qreal staticMapObjectHeight;
 
-    DynamicMapLayer dynamicLayer;
+    DynamicMapLayer * dynamicLayer;
 
     QVector<MapListener*> listeners;
 
