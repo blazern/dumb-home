@@ -4,16 +4,38 @@ import "MapObjects.js" as MapObjects
 
 Item {
     id: container
-    width: 300
-    height: 300
+    width: 500
+    height: 500
     focus: true
+
 
     property int direction_up: 0
     property int direction_right: 1
     property int direction_down: 2
     property int direction_left: 3
 
+    property MapObject player: MapObject {}
+    property int oldWindowWidth: width
+    property int oldWindowHeight: height
+
     property int pressedKeysCount: 0
+
+    onWidthChanged: {
+        for (var index = 0; index < MapObjects.size(); index++) {
+            var mapObject = MapObjects.get(index);
+            mapObject.x += (width - oldWindowWidth)/2;
+        }
+        oldWindowWidth = width;
+    }
+
+    onHeightChanged: {
+        for (var index = 0; index < MapObjects.size(); index++) {
+            var mapObject = MapObjects.get(index);
+            mapObject.y += (height - oldWindowHeight)/2;
+        }
+        oldWindowHeight = height;
+    }
+
 
     SensorControls {
     }
@@ -69,6 +91,17 @@ Item {
         for (var index = 0; index < qmlMapInterface.getObjectsCount(); index++) {
             var mapObject = qmlMapInterface.getMapObject(index);
             MapObjects.add(createElementFrom(mapObject));
+            if (mapObject.id === qmlMapInterface.getPlayerId()) {
+                player.mapObjectId = mapObject.id;
+                player.x = mapObject.x;
+                player.y = mapObject.y;
+            }
+        }
+
+        for (index = 0; index < MapObjects.size(); index++) {
+            mapObject = MapObjects.get(index);
+            mapObject.x += (container.width/2 - player.x);
+            mapObject.y += (container.height/2 - player.y);
         }
     }
 
@@ -81,19 +114,31 @@ Item {
     QmlMapInterface {
         id: qmlMapInterface
         objectName: "qmlMapInterface"
+
         onMapSetUp: {
             setUpGraphicalMap();
         }
 
         onObjectChangedPosition: {
-            for (var index = 0; index < MapObjects.size(); index++) {
-                var mapObject = MapObjects.get(index);
+            if (id === player.mapObjectId) {
+                for (var index = 0; index < MapObjects.size(); index++) {
+                    var mapObject = MapObjects.get(index);
+                    var xOffset = x - player.x
+                    var yOffset = y - player.y;
+                    if (mapObject.mapObjectId !== id) {
+                        //Move Right/Left
+                        if(xOffset != 0){
+                            mapObject.x -= xOffset;
+                        }
 
-                if (mapObject.mapObjectId === id) {
-                    mapObject.x = x;
-                    mapObject.y = y;
-                    return;
+                        //Move Up/Down
+                        if(yOffset != 0){
+                            mapObject.y -= yOffset;
+                        }
+                    }
                 }
+                player.x = x;
+                player.y = y;
             }
         }
     }
