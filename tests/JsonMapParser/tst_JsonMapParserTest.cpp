@@ -118,13 +118,13 @@ JsonMapParserTest::JsonMapParserTest() :
 
 void JsonMapParserTest::testValidMapExistence()
 {
-    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parse(validMapJson));
+    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parseJson(validMapJson));
     QVERIFY(validMap != nullptr);
 }
 
 void JsonMapParserTest::testValidMapSizes()
 {
-    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parse(validMapJson));
+    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parseJson(validMapJson));
     const StaticMapLayer & staticLayer = validMap->getStaticLayer();
 
     const int expectedWidth = 4;
@@ -136,7 +136,7 @@ void JsonMapParserTest::testValidMapSizes()
 
 void JsonMapParserTest::testValidStaticObjectSizes()
 {
-    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parse(validMapJson));
+    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parseJson(validMapJson));
 
     QVERIFY(validMap->getStaticMapObjectWidth() == 9);
     QVERIFY(validMap->getStaticMapObjectHeight() == 10);
@@ -144,7 +144,7 @@ void JsonMapParserTest::testValidStaticObjectSizes()
 
 void JsonMapParserTest::testValidMapStaticLayer()
 {
-    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parse(validMapJson));
+    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parseJson(validMapJson));
     const StaticMapLayer & staticLayer = validMap->getStaticLayer();
 
     // line0
@@ -174,7 +174,7 @@ void JsonMapParserTest::testValidMapStaticLayer()
 
 void JsonMapParserTest::testValidMapPlayer()
 {
-    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parse(validMapJson));
+    const QSharedPointer<const Map> validMap = QSharedPointer<const Map>(mapParser.parseJson(validMapJson));
     const DynamicMapLayer & dynamicLayer = validMap->getDynamicLayer();
 
     const QRectF & playerRect = dynamicLayer.getPlayer().getRect();
@@ -192,7 +192,7 @@ void JsonMapParserTest::testIvalidMapWithPlayerInsideOfWallThrows()
     try
     {
         const QSharedPointer<const Map> invalidValidMap =
-                QSharedPointer<const Map>(mapParser.parse(invalidMapJson));
+                QSharedPointer<const Map>(mapParser.parseJson(invalidMapJson));
     }
     catch (const std::invalid_argument &)
     {

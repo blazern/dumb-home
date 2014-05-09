@@ -10,7 +10,6 @@ class StaticMapLayer
     Q_DISABLE_COPY(StaticMapLayer)
 public:
     explicit StaticMapLayer(const QVector<QVector<QSharedPointer<StaticMapObject>>> & staticObjects);
-    explicit StaticMapLayer(const int width, const int height);
 
     int getWidth() const;
     int getHeight() const;

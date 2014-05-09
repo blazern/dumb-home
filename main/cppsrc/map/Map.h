@@ -19,7 +19,6 @@ public:
                  DynamicMapLayer * dynamicLayer,
                  const qreal staticObjectWidth,
                  const qreal staticObjectHeight);
-    explicit Map(const int width, const int height, const qreal staticMapObjectWidth, const qreal staticMapObjectHeight);
     virtual ~Map();
 
     const StaticMapLayer & getStaticLayer() const;

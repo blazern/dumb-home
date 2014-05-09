@@ -7,6 +7,9 @@ class StaticMapObject
 {
 public:
     virtual ~StaticMapObject(){}
+
+protected:
+    explicit StaticMapObject(){}
 };
 
 #endif // STATICMAPOBJECT_H

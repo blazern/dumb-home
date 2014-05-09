@@ -17,13 +17,13 @@ class JsonObjectParser
 {
 public:
     // throws std::invalid_argument
-    ObjectType * parse(const QUrl & url) const
+    ObjectType * parseFromFile(const QString & path) const
     {
-        return parseJsonObject(parseJsonFile(url));
+        return parseJsonObject(parseJsonFile(path));
     }
 
     // throws std::invalid_argument
-    ObjectType * parse(const QString & json) const
+    ObjectType * parseJson(const QString & json) const
     {
         return parseJsonObject(jsonToObject(json.toUtf8()));
     }
@@ -34,9 +34,8 @@ protected:
 
 private:
     // throws std::invalid_argument
-    QJsonObject parseJsonFile(const QUrl & url) const
+    QJsonObject parseJsonFile(const QString & path) const
     {
-        const QString path = url.toLocalFile();
         QFile file(path);
 
         if (file.exists())
@@ -50,8 +49,8 @@ private:
         else
         {
             throw std::invalid_argument(QString(
-                                            "Parsing of file with URL: "
-                                            + url.toString()
+                                            "Parsing of file with path: "
+                                            + path
                                             + " is impossible because file doesn't exist").toStdString());
         }
     }

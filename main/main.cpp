@@ -28,13 +28,11 @@ int main(int argc, char *argv[])
 
     const JsonMapParser mapParser;
 
-    const QUrl defaultUrl(QUrl::fromLocalFile(QString() + "resources" + QDir::separator() + "map.json"));
-
     QSharedPointer<Map> map;
 
     try
     {
-        map.reset(mapParser.parse(defaultUrl));
+        map.reset(mapParser.parseFromFile(":/map.json"));
     }
     catch (std::invalid_argument & exception)
     {

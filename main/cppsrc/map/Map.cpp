@@ -16,15 +16,6 @@ Map::Map(StaticMapLayer * staticLayer, DynamicMapLayer * dynamicLayer, const qre
     dynamicLayer->getPlayer().setMover(*this);
 }
 
-Map::Map(const int width, const int height, const qreal staticMapObjectWidth, const qreal staticMapObjectHeight) :
-    staticLayer(new StaticMapLayer(width, height)),
-    staticMapObjectWidth(staticMapObjectWidth),
-    staticMapObjectHeight(staticMapObjectHeight),
-    dynamicLayer(new DynamicMapLayer(QRectF(20, 20, 10, 10), this)),
-    listeners()
-{
-}
-
 Map::~Map()
 {
     delete staticLayer;
