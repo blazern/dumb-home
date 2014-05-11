@@ -1,5 +1,7 @@
 #include "QmlMapInterface.h"
 
+#include "map/Wall.h"
+
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
@@ -35,14 +37,14 @@ void QmlMapInterface::refillMapObjects()
     {
         for (int heightIndex = 0; heightIndex < mapHeight; heightIndex++)
         {
-            const StaticMapObject * const mapObject =
+            const StaticMapObject & mapObject =
                     staticMapLayer.get(widthIndex, heightIndex);
 
-            if (mapObject != nullptr)
+            if (dynamic_cast<const Wall*>(&mapObject) != nullptr)
             {
                 mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
                                       new MapObjectQmlWrapper(
-                                          *mapObject,
+                                          mapObject,
                                           map->getRectOfStaticObjectWith(widthIndex, heightIndex),
                                           this)));
             }

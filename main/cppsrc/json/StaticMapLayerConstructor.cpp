@@ -1,6 +1,7 @@
 #include "StaticMapLayerConstructor.h"
 #include <stdexcept>
-#include "../map/StaticMapObjectImpl.h"
+#include "../map/Wall.h"
+#include "../map/Air.h"
 
 StaticMapLayerConstructor::StaticMapLayerConstructor(const int width, const int height) :
     grid()
@@ -31,20 +32,20 @@ void StaticMapLayerConstructor::markCell(const int x, const int y)
 
 StaticMapLayer * StaticMapLayerConstructor::construct() const
 {
-    QVector<QVector<QSharedPointer<StaticMapObject>>> staticObjects;
+    QVector<QVector<StaticMapObject*>> staticObjects;
 
     for (int horIndex = 0; horIndex < grid.size(); horIndex++)
     {
-        staticObjects.append(QVector<QSharedPointer<StaticMapObject>>());
+        staticObjects.append(QVector<StaticMapObject*>());
         for (int verIndex = 0; verIndex < grid[0].size(); verIndex++)
         {
             if (grid[horIndex][verIndex] == true)
             {
-                staticObjects[horIndex].append(QSharedPointer<StaticMapObject>(new StaticMapObjectImpl()));
+                staticObjects[horIndex].append(new Wall());
             }
             else
             {
-                staticObjects[horIndex].append(QSharedPointer<StaticMapObject>(nullptr));
+                staticObjects[horIndex].append(new Air());
             }
         }
     }

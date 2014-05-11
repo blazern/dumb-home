@@ -5,6 +5,7 @@
 
 class StaticMapObject
 {
+    friend class QVector<StaticMapObject>;
 public:
     virtual ~StaticMapObject(){}
 

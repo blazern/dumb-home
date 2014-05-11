@@ -46,7 +46,7 @@ private:
 
 private:
     bool isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) const;
-    bool isRectangleWithNewPositionValid(const QRectF & rect, const qreal x, const qreal y) const;
+    bool isNewPositionWithinMap(const QRectF & rect, const qreal x, const qreal y) const;
 };
 
 #endif // MAP_H

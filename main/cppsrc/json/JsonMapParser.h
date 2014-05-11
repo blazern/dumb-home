@@ -16,7 +16,10 @@ public:
 
 private:
     QRectF parsePlayerRect(const QJsonObject & mapAsJson) const;
-    void parseStaticMapObjectSizes(const QJsonObject & mapAsJson, int * width, int * height) const;
+
+    void parseStaticMapObjectSizes(const QJsonObject & mapAsJson, int * const width, int * const height) const;
+
+    void checkStaticMap(const QJsonObject & mapAsJson) const;
     StaticMapLayer * parseStaticMapLayer(const QJsonObject & mapAsJson) const;
 };
 
