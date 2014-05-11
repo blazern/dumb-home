@@ -1,5 +1,5 @@
 #include "Map.h"
-#include "StaticMapObjectImpl.h"
+#include "Wall.h"
 #include <math.h>
 
 #ifdef QT_DEBUG
@@ -114,7 +114,7 @@ void Map::move(const DynamicMapObject & mapObject, const qreal toX, const qreal 
 
 bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) const
 {
-    if (isRectangleWithNewPositionValid(rect, x, y))
+    if (isNewPositionWithinMap(rect, x, y))
     {
         // static objects represent a grid, therefore it is easy to check
         // if there is any static object underneath the rect
@@ -127,7 +127,7 @@ bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) 
         {
             for (int ver = top; ver <= bottom; ver++)
             {
-                if (staticLayer->get(hor, ver) != nullptr)
+                if (dynamic_cast<Wall*>(&staticLayer->get(hor, ver)) != nullptr)
                 {
                     return false;
                 }
@@ -141,7 +141,7 @@ bool Map::isNewPositionValid(const QRectF & rect, const qreal x, const qreal y) 
     }
 }
 
-bool Map::isRectangleWithNewPositionValid(const QRectF & rect, const qreal x, const qreal y) const
+bool Map::isNewPositionWithinMap(const QRectF & rect, const qreal x, const qreal y) const
 {
     return 0 <= x
             && 0 <= y

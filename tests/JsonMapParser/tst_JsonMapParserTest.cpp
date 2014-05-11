@@ -4,6 +4,8 @@
 #include <QSharedPointer>
 #include <stdexcept>
 #include "../../main/cppsrc/json/JsonMapParser.h"
+#include "../../main/cppsrc/map/Wall.h"
+#include "../../main/cppsrc/map/Air.h"
 
 class JsonMapParserTest : public QObject
 {
@@ -16,6 +18,10 @@ private:
     const JsonMapParser mapParser;
     const QString validMapJson;
     const QString invalidMapJson;
+
+private:
+    bool isWall(const StaticMapObject & staticMapObject) const;
+    bool isAir(const StaticMapObject & staticMapObject) const;
 
 private Q_SLOTS:
     void testValidMapExistence();
@@ -148,28 +154,38 @@ void JsonMapParserTest::testValidMapStaticLayer()
     const StaticMapLayer & staticLayer = validMap->getStaticLayer();
 
     // line0
-    QVERIFY(staticLayer.get(0, 0) != nullptr);
-    QVERIFY(staticLayer.get(1, 0) != nullptr);
-    QVERIFY(staticLayer.get(2, 0) != nullptr);
-    QVERIFY(staticLayer.get(3, 0) != nullptr);
+    QVERIFY(isWall(staticLayer.get(0, 0)));
+    QVERIFY(isWall(staticLayer.get(1, 0)));
+    QVERIFY(isWall(staticLayer.get(2, 0)));
+    QVERIFY(isWall(staticLayer.get(3, 0)));
 
     // line1
-    QVERIFY(staticLayer.get(0, 1) != nullptr);
-    QVERIFY(staticLayer.get(1, 1) == nullptr);
-    QVERIFY(staticLayer.get(2, 1) == nullptr);
-    QVERIFY(staticLayer.get(3, 1) != nullptr);
+    QVERIFY(isWall(staticLayer.get(0, 1)));
+    QVERIFY(isAir(staticLayer.get(1, 1)));
+    QVERIFY(isAir(staticLayer.get(2, 1)));
+    QVERIFY(isWall(staticLayer.get(3, 1)));
 
     // line2
-    QVERIFY(staticLayer.get(0, 2) != nullptr);
-    QVERIFY(staticLayer.get(1, 2) == nullptr);
-    QVERIFY(staticLayer.get(2, 2) == nullptr);
-    QVERIFY(staticLayer.get(3, 2) != nullptr);
+    QVERIFY(isWall(staticLayer.get(0, 2)));
+    QVERIFY(isAir(staticLayer.get(1, 2)));
+    QVERIFY(isAir(staticLayer.get(2, 2)));
+    QVERIFY(isWall(staticLayer.get(3, 2)));
 
     // line3
-    QVERIFY(staticLayer.get(0, 3) != nullptr);
-    QVERIFY(staticLayer.get(1, 3) != nullptr);
-    QVERIFY(staticLayer.get(2, 3) != nullptr);
-    QVERIFY(staticLayer.get(3, 3) != nullptr);
+    QVERIFY(isWall(staticLayer.get(0, 3)));
+    QVERIFY(isWall(staticLayer.get(1, 3)));
+    QVERIFY(isWall(staticLayer.get(2, 3)));
+    QVERIFY(isWall(staticLayer.get(3, 3)));
+}
+
+bool JsonMapParserTest::isWall(const StaticMapObject & staticMapObject) const
+{
+    return dynamic_cast<const Wall*>(&staticMapObject) != nullptr;
+}
+
+bool JsonMapParserTest::isAir(const StaticMapObject & staticMapObject) const
+{
+    return dynamic_cast<const Air*>(&staticMapObject) != nullptr;
 }
 
 void JsonMapParserTest::testValidMapPlayer()

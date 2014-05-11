@@ -131,7 +131,7 @@ QRectF JsonMapParser::parsePlayerRect(const QJsonObject & mapAsJson) const
     }
 }
 
-void JsonMapParser::parseStaticMapObjectSizes(const QJsonObject & mapAsJson, int * width, int * height) const
+void JsonMapParser::parseStaticMapObjectSizes(const QJsonObject & mapAsJson, int * const width, int * const height) const
 {
     if (mapAsJson.contains("staticLayerWidth")
         && mapAsJson.contains("staticLayerHeight"))
@@ -157,6 +157,7 @@ void JsonMapParser::parseStaticMapObjectSizes(const QJsonObject & mapAsJson, int
     }
 }
 
+// WARNING! THE BELOW CODE IS EXTREMLY UGLY!
 StaticMapLayer * JsonMapParser::parseStaticMapLayer(const QJsonObject & mapAsJson) const
 {
     int staticLayerWidth;
@@ -217,7 +218,6 @@ StaticMapLayer * JsonMapParser::parseStaticMapLayer(const QJsonObject & mapAsJso
                                         if (xValue.isDouble())
                                         {
                                             const int x = xValue.toDouble();
-
                                             staticMapLayerConstructor.markCell(x, y);
                                         }
                                         else
