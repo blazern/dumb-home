@@ -9,7 +9,7 @@ Item {
         id: up
         width: controlsSize
         height: controlsSize
-        color: controlsColor
+        color: "#0500ff"
         x: controlsSize + controlsMargin
         y: 0
 
