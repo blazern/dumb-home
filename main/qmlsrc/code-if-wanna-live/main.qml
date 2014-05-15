@@ -8,13 +8,12 @@ Item {
     height: 500
     focus: true
 
-
     property int direction_up: 0
     property int direction_right: 1
     property int direction_down: 2
     property int direction_left: 3
 
-    property MapObject player: MapObject {}
+    property int playerId: -1
     property int oldWindowWidth: width
     property int oldWindowHeight: height
 
@@ -88,20 +87,22 @@ Item {
         }
         MapObjects.clear();
 
+        var playerX = 0;
+        var playerY = 0;
         for (var index = 0; index < qmlMapInterface.getObjectsCount(); index++) {
             var mapObject = qmlMapInterface.getMapObject(index);
             MapObjects.add(createElementFrom(mapObject));
             if (mapObject.id === qmlMapInterface.getPlayerId()) {
-                player.mapObjectId = mapObject.id;
-                player.x = mapObject.x;
-                player.y = mapObject.y;
+                playerId = mapObject.id;
+                playerX = mapObject.x;
+                playerY = mapObject.y;
             }
         }
 
         for (index = 0; index < MapObjects.size(); index++) {
             mapObject = MapObjects.get(index);
-            mapObject.x += (container.width/2 - player.x);
-            mapObject.y += (container.height/2 - player.y);
+            mapObject.x += (container.width/2 - playerX);
+            mapObject.y += (container.height/2 - playerY);
         }
     }
 
@@ -120,11 +121,11 @@ Item {
         }
 
         onObjectChangedPosition: {
-            if (id === player.mapObjectId) {
+            if (id === playerId) {
                 for (var index = 0; index < MapObjects.size(); index++) {
                     var mapObject = MapObjects.get(index);
-                    var xOffset = x - player.x
-                    var yOffset = y - player.y;
+                    var xOffset = newX - oldX;
+                    var yOffset = newY - oldY;
                     if (mapObject.mapObjectId !== id) {
                         //Move Right/Left
                         if(xOffset != 0){
@@ -137,8 +138,6 @@ Item {
                         }
                     }
                 }
-                player.x = x;
-                player.y = y;
             }
         }
     }

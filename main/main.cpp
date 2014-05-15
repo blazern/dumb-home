@@ -7,13 +7,29 @@
 #include "cppsrc/qtquick2applicationviewer/qtquick2applicationviewer.h"
 #include "cppsrc/PlayerActionsQmlReceiver.h"
 #include "cppsrc/QmlMapInterface.h"
-#include "cppsrc/map/DynamicMapObject.h"
+#include "cppsrc/logic/DynamicMapObject.h"
 #include "cppsrc/MapObjectQmlWrapper.h"
 #include "cppsrc/json/JsonMapParser.h"
+#include "cppsrc/logic/MapPhysics.h"
+#include "cppsrc/logic/World.h"
 
 #ifdef QT_DEBUG
 #include <QDebug>
 #endif
+
+Map * createMap()
+{
+    const JsonMapParser mapParser;
+    try
+    {
+        return mapParser.parseFromFile(":/map.json");
+    }
+    catch (std::invalid_argument & exception)
+    {
+        qDebug() << "Application is going to crash because of an unhandled Map parsing exception: " << exception.what();
+        throw exception;
+    }
+}
 
 int main(int argc, char *argv[])
 {
@@ -26,21 +42,10 @@ int main(int argc, char *argv[])
     viewer.setMainQmlFile(QStringLiteral("qmlsrc/code-if-wanna-live/main.qml"));
     viewer.showExpanded();
 
-    const JsonMapParser mapParser;
+    Map * const map = createMap();
+    World world(map, new MapPhysics(*map));
 
-    QSharedPointer<Map> map;
-
-    try
-    {
-        map.reset(mapParser.parseFromFile(":/map.json"));
-    }
-    catch (std::invalid_argument & exception)
-    {
-        qDebug() << exception.what();
-        return -1;
-    }
-
-    PlayerActionsQmlReceiver playerActionsQmlReceiver(*map);
+    PlayerActionsQmlReceiver playerActionsQmlReceiver(world.getMap());
     viewer.rootContext()->setContextProperty("playerActionsReceiver", &playerActionsQmlReceiver);
 
     QmlMapInterface * const qmlMapInterface =
@@ -48,8 +53,8 @@ int main(int argc, char *argv[])
 
     if (qmlMapInterface != nullptr)
     {
-        qmlMapInterface->setMap(*map);
-        map->addListener(*qmlMapInterface);
+        qmlMapInterface->setMap(world.getMap());
+        world.getMapPhysics().addListener(*qmlMapInterface);
     }
 
     return app.exec();
