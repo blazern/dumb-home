@@ -1,6 +1,6 @@
 #include "QmlMapInterface.h"
 
-#include "map/Wall.h"
+#include "logic/Wall.h"
 
 #ifdef QT_DEBUG
 #include <QDebug>
@@ -8,7 +8,7 @@
 
 QmlMapInterface::QmlMapInterface(QObject * parent) :
     QObject(parent),
-    MapListener(),
+    MapPhysicsListener(),
     map(nullptr),
     playerId(0),
     mapObjects()
@@ -97,7 +97,7 @@ unsigned int QmlMapInterface::getPlayerId() const
     return playerId;
 }
 
-void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position)
+void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, const QPointF & oldPosition, const QPointF & newPosition)
 {
     unsigned int id = 0;
     for (auto iterator = mapObjects.begin(); iterator != mapObjects.end(); iterator++)
@@ -117,5 +117,5 @@ void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, c
     }
 #endif
 
-    emit objectChangedPosition(id, position.x(), position.y());
+    emit objectChangedPosition(id, oldPosition.x(), oldPosition.y(), newPosition.x(), newPosition.y());
 }

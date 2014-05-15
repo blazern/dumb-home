@@ -4,8 +4,8 @@
 #include <QSharedPointer>
 #include <stdexcept>
 #include "../../main/cppsrc/json/JsonMapParser.h"
-#include "../../main/cppsrc/map/Wall.h"
-#include "../../main/cppsrc/map/Air.h"
+#include "../../main/cppsrc/logic/Wall.h"
+#include "../../main/cppsrc/logic/Air.h"
 
 class JsonMapParserTest : public QObject
 {

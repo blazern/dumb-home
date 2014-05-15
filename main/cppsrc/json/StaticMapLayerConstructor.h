@@ -2,7 +2,7 @@
 #define STATICMAPLAYERCONSTRUCTOR_H
 
 #include <QVector>
-#include "../map/StaticMapLayer.h"
+#include "../logic/StaticMapLayer.h"
 
 class StaticMapLayerConstructor
 {

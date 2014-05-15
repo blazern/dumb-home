@@ -2,7 +2,7 @@
 #define JSONMAPPARSER_H
 
 #include "JsonObjectParser.h"
-#include "../map/Map.h"
+#include "../logic/Map.h"
 
 
 class JsonMapParser : public JsonObjectParser<Map>

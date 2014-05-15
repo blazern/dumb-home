@@ -1,7 +1,7 @@
 #include "StaticMapLayerConstructor.h"
 #include <stdexcept>
-#include "../map/Wall.h"
-#include "../map/Air.h"
+#include "../logic/Wall.h"
+#include "../logic/Air.h"
 
 StaticMapLayerConstructor::StaticMapLayerConstructor(const int width, const int height) :
     grid()

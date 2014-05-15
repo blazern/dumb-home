@@ -3,8 +3,8 @@
 
 #include <QObject>
 #include <QColor>
-#include "map/DynamicMapObject.h"
-#include "map/StaticMapObject.h"
+#include "logic/DynamicMapObject.h"
+#include "logic/StaticMapObject.h"
 
 
 class MapObjectQmlWrapper : public QObject

@@ -3,11 +3,11 @@
 
 #include <QObject>
 #include <QSharedPointer>
-#include "map/MapListener.h"
-#include "map/Map.h"
+#include "logic/MapPhysicsListener.h"
+#include "logic/Map.h"
 #include "MapObjectQmlWrapper.h"
 
-class QmlMapInterface : public QObject, public MapListener
+class QmlMapInterface : public QObject, public MapPhysicsListener
 {
     Q_OBJECT
     Q_DISABLE_COPY(QmlMapInterface)
@@ -23,10 +23,18 @@ public:
     Q_INVOKABLE MapObjectQmlWrapper * getMapObject(const int index);
     Q_INVOKABLE unsigned int getPlayerId() const;
 
-    virtual void onObjectChangedPosition(const DynamicMapObject & object, const QPointF & position) final override;
+    virtual void onObjectChangedPosition(
+            const DynamicMapObject & object,
+            const QPointF & oldPosition,
+            const QPointF & newPosition) final override;
 
 signals:
-    void objectChangedPosition(const unsigned int id, const qreal x, const qreal y) const;
+    void objectChangedPosition(
+            const unsigned int id,
+            const qreal oldX,
+            const qreal oldY,
+            const qreal newX,
+            const qreal newY) const;
     void mapSetUp() const;
 
 private:
