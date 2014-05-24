@@ -23,7 +23,7 @@ public:
     }
 
     // throws std::invalid_argument
-    ObjectType * parseJson(const QString & json) const
+    ObjectType * parseFromString(const QString & json) const
     {
         return parseJsonObject(jsonToObject(json.toUtf8()));
     }

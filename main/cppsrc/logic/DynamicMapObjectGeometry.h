@@ -19,7 +19,10 @@ public:
     {
     }
 
-    ~DynamicMapObjectGeometry();
+    ~DynamicMapObjectGeometry()
+    {
+        delete dynamicMapObject;
+    }
 
     const QRectF & getRect() const { return rect; }
     QRectF & getRect() { return rect; }
