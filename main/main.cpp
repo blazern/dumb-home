@@ -27,7 +27,7 @@ Map * createMap()
     catch (std::invalid_argument & exception)
     {
         qDebug() << "Application is going to crash because of an unhandled Map parsing exception: " << exception.what();
-        throw exception;
+        throw;
     }
 }
 

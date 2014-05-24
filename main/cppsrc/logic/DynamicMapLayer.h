@@ -11,6 +11,8 @@
 
 class DynamicMapLayer
 {
+    DynamicMapLayer(DynamicMapLayer & other) = delete;
+    DynamicMapLayer & operator=(DynamicMapLayer & other) = delete;
 public:
     explicit DynamicMapLayer(const QRectF & playerRect, Mover * mover = nullptr);
 

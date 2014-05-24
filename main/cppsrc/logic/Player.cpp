@@ -1,27 +1,20 @@
 #include "Player.h"
 
-Player::Player(const QRectF & rect, Mover & mover, QObject * parent) :
-    Player(rect, &mover, parent)
+Player::Player(const QRectF & rect, Mover & mover) :
+    Player(rect, &mover)
 {
 }
 
-Player::Player(const QRectF & rect, QObject * parent) :
-    Player(rect, nullptr, parent)
+Player::Player(const QRectF & rect) :
+    Player(rect, nullptr)
 {
 }
 
-Player::Player(const QRectF & rect, Mover * mover, QObject * parent) :
-    QObject(parent),
+Player::Player(const QRectF & rect, Mover * mover) :
     DynamicMapObject(),
     rect(rect),
-    mover(mover),
-    movementDirection(Player::MovementDirection::UP),
-    movementTimer()
+    mover(mover)
 {
-    movementTimer.setSingleShot(false);
-    movementTimer.setInterval(timerInterval);
-    connect(&movementTimer, &QTimer::timeout,
-            this, &Player::onMovementTimerTimeout);
 }
 
 void Player::setMover(Mover & mover)
@@ -31,18 +24,32 @@ void Player::setMover(Mover & mover)
 
 void Player::moveTo(const Player::MovementDirection direction)
 {
-    if (this->movementDirection == direction && movementTimer.isActive())
+    if (mover != nullptr)
     {
-        return;
+        switch (direction)
+        {
+        case MovementDirection::UP:
+            mover->move(*this, 270);
+            break;
+        case MovementDirection::RIGHT:
+            mover->move(*this, 0);
+            break;
+        case MovementDirection::DOWN:
+            mover->move(*this, 90);
+            break;
+        case MovementDirection::LEFT:
+            mover->move(*this, 180);
+            break;
+        }
     }
-
-    this->movementDirection = direction;
-    movementTimer.start(timerInterval);
 }
 
 void Player::stopMovement()
 {
-    movementTimer.stop();
+    if (mover != nullptr)
+    {
+        mover->stop(*this);
+    }
 }
 
 const QRectF & Player::getRect() const
@@ -50,32 +57,3 @@ const QRectF & Player::getRect() const
     return rect;
 }
 
-void Player::onMovementTimerTimeout()
-{
-    if (mover != nullptr)
-    {
-        const qreal distanse = (((qreal) timerInterval) * speed) / 1000;
-
-        qreal resultPosition;
-
-        switch (movementDirection)
-        {
-        case MovementDirection::UP:
-            resultPosition = rect.y() + distanse;
-            mover->move(*this, rect.x(), resultPosition);
-            break;
-        case MovementDirection::RIGHT:
-            resultPosition = rect.x() + distanse;
-            mover->move(*this, resultPosition, rect.y());
-            break;
-        case MovementDirection::DOWN:
-            resultPosition = rect.y() - distanse;
-            mover->move(*this, rect.x(), resultPosition);
-            break;
-        case MovementDirection::LEFT:
-            resultPosition = rect.x() - distanse;
-            mover->move(*this, resultPosition, rect.y());
-            break;
-        }
-    }
-}
