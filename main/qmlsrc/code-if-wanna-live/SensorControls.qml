@@ -19,25 +19,21 @@ Item {
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) <= 0) &&
                         (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) >= 0)){
                    playerActionsReceiver.onMoveRequested(direction_right);
-                   console.log('Move right');
                 }
 
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) >= 0) &&
                         (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) >= 0)){
                    playerActionsReceiver.onMoveRequested(direction_down);
-                    console.log('Move down');
                 }
 
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) >= 0) &&
                         (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) <= 0)){
                    playerActionsReceiver.onMoveRequested(direction_left);
-                    console.log('Move left');
                 }
 
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) <= 0) &&
                         (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) <= 0)){
                    playerActionsReceiver.onMoveRequested(direction_up);
-                    console.log('Move up');
                 }
             }
             onReleased: {
