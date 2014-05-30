@@ -4,8 +4,7 @@
 #include <QSharedPointer>
 #include <stdexcept>
 #include "../../main/cppsrc/json/JsonMapParser.h"
-#include "../../main/cppsrc/logic/Wall.h"
-#include "../../main/cppsrc/logic/Air.h"
+#include "../../main/cppsrc/logic/StaticMapObject.h"
 
 class JsonMapParserTest : public QObject
 {
@@ -18,10 +17,12 @@ private:
     const JsonMapParser mapParser;
     const QString validMapJson;
     const QString invalidMapJson;
+    const QString mapWithStairsJson;
 
 private:
     bool isWall(const StaticMapObject & staticMapObject) const;
     bool isAir(const StaticMapObject & staticMapObject) const;
+    bool isStairs(const StaticMapObject & staticMapObject) const;
 
 private Q_SLOTS:
     void testValidMapExistence();
@@ -30,6 +31,7 @@ private Q_SLOTS:
     void testValidMapStaticLayer();
     void testValidMapPlayer();
     void testIvalidMapWithPlayerInsideOfWallThrows();
+    void testStairsParsing();
 };
 
 JsonMapParserTest::JsonMapParserTest() :
@@ -118,7 +120,41 @@ JsonMapParserTest::JsonMapParserTest() :
                    R"(            { "x":2 }, )"
                    R"(            { "x":3 } )"
                    R"(        ] }    ] )"
-                   R"(} )")
+                   R"(} )"),
+    //represents:
+    // ooo
+    // xsx
+    // oso
+    // xxx
+    mapWithStairsJson(R"({ )"
+                      R"( "player": { )"
+                      R"(        "x": 10, )"
+                      R"(        "y": 10, )"
+                      R"(        "width": 10, )"
+                      R"(        "height": 10 )"
+                      R"(    },)"
+                      R"(    "staticObjectWidth": 10, )"
+                      R"(    "staticObjectHeight": 10, )"
+                      R"(    "staticLayerWidth": 3, )"
+                      R"(    "staticLayerHeight": 4, )"
+                      R"(    "rows": [ { )"
+                      R"(        "y":1, )"
+                      R"(        "cells": [ )"
+                      R"(            { "x":0, "type": "wall" }, )"
+                      R"(            { "x":1, "type": "stairs" }, )"
+                      R"(            { "x":2, "type": "wall" } )"
+                      R"(        ] }, { )"
+                      R"(        "y":2, )"
+                      R"(        "cells": [ )"
+                      R"(            { "x":1, "type": "stairs" } )"
+                      R"(        ] }, { )"
+                      R"(        "y":3, )"
+                      R"(        "cells": [ )"
+                      R"(            { "x":0, "type": "wall" }, )"
+                      R"(            { "x":1, "type": "wall" }, )"
+                      R"(            { "x":2, "type": "wall" } )"
+                      R"(        ] }    ] )"
+                      R"(} )")
 {
 }
 
@@ -180,12 +216,12 @@ void JsonMapParserTest::testValidMapStaticLayer()
 
 bool JsonMapParserTest::isWall(const StaticMapObject & staticMapObject) const
 {
-    return dynamic_cast<const Wall*>(&staticMapObject) != nullptr;
+    return staticMapObject.getType() == StaticMapObject::Type::WALL;
 }
 
 bool JsonMapParserTest::isAir(const StaticMapObject & staticMapObject) const
 {
-    return dynamic_cast<const Air*>(&staticMapObject) != nullptr;
+    return staticMapObject.getType() == StaticMapObject::Type::AIR;
 }
 
 void JsonMapParserTest::testValidMapPlayer()
@@ -216,6 +252,20 @@ void JsonMapParserTest::testIvalidMapWithPlayerInsideOfWallThrows()
     }
 
     QVERIFY(exceptionThrown);
+}
+
+void JsonMapParserTest::testStairsParsing()
+{
+    const QSharedPointer<const Map> mapWithStairs = QSharedPointer<const Map>(mapParser.parseFromString(mapWithStairsJson));
+    const StaticMapLayer & staticLayer = mapWithStairs->getStaticLayer();
+
+    QVERIFY(isStairs(staticLayer.get(1, 1)));
+    QVERIFY(isStairs(staticLayer.get(1, 2)));
+}
+
+bool JsonMapParserTest::isStairs(const StaticMapObject & staticMapObject) const
+{
+    return staticMapObject.getType() == StaticMapObject::Type::STAIRS;
 }
 
 QTEST_MAIN(JsonMapParserTest)

@@ -1,6 +1,6 @@
 #include "QmlMapInterface.h"
 
-#include "logic/Wall.h"
+#include "logic/StaticMapObject.h"
 
 #ifdef QT_DEBUG
 #include <QDebug>
@@ -39,13 +39,33 @@ void QmlMapInterface::refillMapObjects()
         {
             const StaticMapObject & mapObject =
                     staticMapLayer.get(widthIndex, heightIndex);
+            const StaticMapObject::Type type = mapObject.getType();
 
-            if (dynamic_cast<const Wall*>(&mapObject) != nullptr)
+            if (type != StaticMapObject::Type::AIR)
             {
+                QColor color;
+
+                switch (type)
+                {
+                case StaticMapObject::Type::WALL:
+                    color = QColor("red");
+                    break;
+                case StaticMapObject::Type::STAIRS:
+                    color = QColor("purple");
+                    break;
+                default:
+#ifdef QT_DEBUG
+                    qDebug() << "an unknown type of StaticMapObject is received!";
+#endif
+                    color = QColor("black");
+                    break;
+                }
+
                 mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
                                       new MapObjectQmlWrapper(
                                           mapObject,
                                           map->getRectOfStaticObjectWith(widthIndex, heightIndex),
+                                          color,
                                           this)));
             }
         }

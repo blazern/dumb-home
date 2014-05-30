@@ -28,13 +28,13 @@ MapObjectQmlWrapper::MapObjectQmlWrapper(const DynamicMapObject & dynamicMapObje
 {
 }
 
-MapObjectQmlWrapper::MapObjectQmlWrapper(
-        const StaticMapObject & staticMapObject,
-        const QRectF & rect,
-        QObject * parent) :
+MapObjectQmlWrapper::MapObjectQmlWrapper(const StaticMapObject & staticMapObject,
+                                         const QRectF & rect,
+                                         const QColor & color,
+                                         QObject * parent) :
     QObject(parent),
     id(nextId++),
-    color("red"),
+    color(color),
     dynamicMapObject(nullptr),
     staticMapObject(&staticMapObject),
     width(rect.width()),

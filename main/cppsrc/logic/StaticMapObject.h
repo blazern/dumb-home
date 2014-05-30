@@ -5,12 +5,14 @@
 
 class StaticMapObject
 {
-    friend class QVector<StaticMapObject>;
 public:
-    virtual ~StaticMapObject(){}
+    enum class Type { AIR, WALL, STAIRS };
 
-protected:
-    explicit StaticMapObject(){}
+    explicit StaticMapObject(const Type type) : type(type) {}
+    Type getType() const { return type; }
+
+private:
+    const Type type;
 };
 
 #endif // STATICMAPOBJECT_H

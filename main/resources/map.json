@@ -17,27 +17,41 @@
 		"cells": [
 			{ "x":1 },
 			{ "x":2 },
-			{ "x":3 },
+			{ "x":3, "type": "stairs" },
 			{ "x":4 },
 			{ "x":5 },
 			{ "x":6 }
 		] }, {
+		"y":4,
+		"cells": [
+			{ "x":3, "type": "stairs" }
+		] }, {
 		"y":5,
 		"cells": [
+			{ "x":3, "type": "stairs" },
 			{ "x":5 },
 			{ "x":6 },
 			{ "x":7 },
 			{ "x":8 },
 			{ "x":9 }
 		] }, {
+		"y":6,
+		"cells": [
+			{ "x":3, "type": "stairs" }
+		] }, {
 		"y":7,
 		"cells": [
 			{ "x":0 },
-			{ "x":1 },
-			{ "x":2 },
+			{ "x":1, "type": "stairs" },
+			{ "x":2, "type": "stairs" },
 			{ "x":3 },
 			{ "x":4 },
 			{ "x":5 }
+		] }, {
+		"y":8,
+		"cells": [
+			{ "x":1, "type": "stairs" },
+			{ "x":2, "type": "stairs" }
 		] }, {
 		"y":9,
 		"cells": [

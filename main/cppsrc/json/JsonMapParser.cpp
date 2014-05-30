@@ -43,7 +43,7 @@
 ///			{ "x":0 },
 ///			{ "x":1 },
 ///			{ "x":2 },
-///			{ "x":3 }
+///			{ "x":3, "type": "stairs" }
 ///		] }	]
 /// }
 
@@ -218,11 +218,39 @@ StaticMapLayer * JsonMapParser::parseStaticMapLayer(const QJsonObject & mapAsJso
                                         if (xValue.isDouble())
                                         {
                                             const int x = xValue.toDouble();
-                                            staticMapLayerConstructor.markCell(x, y);
+
+                                            if (cellObject.contains("type"))
+                                            {
+                                                const QJsonValue typeValue = cellObject.value("type");
+                                                if (typeValue.isString())
+                                                {
+                                                    const QString type = typeValue.toString();
+                                                    if (type == "wall")
+                                                    {
+                                                        staticMapLayerConstructor.markCell(x, y, StaticMapObject::Type::WALL);
+                                                    }
+                                                    else if (type == "stairs")
+                                                    {
+                                                        staticMapLayerConstructor.markCell(x, y, StaticMapObject::Type::STAIRS);
+                                                    }
+                                                    else if (type != "air")
+                                                    {
+                                                        throw std::invalid_argument("only wall, stairs and air cell types are supported");
+                                                    }
+                                                }
+                                                else
+                                                {
+                                                    throw std::invalid_argument("cell's 'type' is not string");
+                                                }
+                                            }
+                                            else
+                                            {
+                                                staticMapLayerConstructor.markCell(x, y, StaticMapObject::Type::WALL);
+                                            }
                                         }
                                         else
                                         {
-                                            throw std::invalid_argument("cell's' 'x' is not double");
+                                            throw std::invalid_argument("cell's 'x' is not double");
                                         }
                                     }
                                     else
