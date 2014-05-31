@@ -23,6 +23,7 @@ public:
     explicit MapObjectQmlWrapper(const DynamicMapObject & dynamicMapObject, QObject * parent = 0);
     explicit MapObjectQmlWrapper(const StaticMapObject & staticMapObject,
                                  const QRectF & rect,
+                                 const QColor & color,
                                  QObject * parent = 0);
 
     unsigned int getId() const;

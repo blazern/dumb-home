@@ -1,7 +1,7 @@
 #include "MapPhysics.h"
 #include "DynamicMapObjectGeometry.h"
-#include "Wall.h"
 #include "MapToolKit.h"
+#include "StaticMapObject.h"
 #include <QLineF>
 
 #ifdef QT_DEBUG
@@ -76,7 +76,7 @@ void MapPhysics::stop(const DynamicMapObject & mapObject)
 
 int MapPhysics::getTimeBetweenMoments() const
 {
-    return timeBetweenMoments;
+    return momentsTimer.interval();
 }
 
 void MapPhysics::addListener(MapPhysicsListener & listener)
@@ -162,12 +162,39 @@ const QPointF MapPhysics::calculateNewPositionFor(const QRectF & rect, const qre
     QLineF directionLine(0, 0, (speed / (1000 / momentsTimer.interval())), 0);
     directionLine.setAngle(angle);
 
-    const qreal horDistanse = directionLine.x2() - directionLine.x1();
+    const qreal potentialHorDistance = directionLine.x2() - directionLine.x1();
     const qreal potentialVerDistance = directionLine.y2() - directionLine.y1();
-    const qreal verDistanse = potentialVerDistance > 0 ? potentialVerDistance : 0;
+    qreal horDistance = 0;
+    qreal verDistanse = 0;
+    if (MapToolKit::isRectInsideOfStairs(rect, map))
+    {
+        if (MapToolKit::hasWallBellow(rect, map))
+        {
+            horDistance = potentialHorDistance;
+            if (MapToolKit::isRectInsideOfAir(rect, map))
+            {
+                verDistanse = 0;
+            }
+            else
+            {
+                verDistanse = potentialVerDistance;
+            }
+        }
+        else
+        {
+            horDistance = 0;
+            verDistanse = potentialVerDistance;
+        }
+    }
+    else
+    {
+        horDistance = potentialHorDistance;
+        verDistanse = potentialVerDistance > 0 ? potentialVerDistance : 0;
+    }
+
     const QPointF initialPosition = rect.topLeft();
 
-    return QPointF(initialPosition.x() + horDistanse, initialPosition.y() + verDistanse);
+    return QPointF(initialPosition.x() + horDistance, initialPosition.y() + verDistanse);
 }
 
 

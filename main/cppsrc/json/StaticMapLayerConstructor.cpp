@@ -1,22 +1,20 @@
 #include "StaticMapLayerConstructor.h"
 #include <stdexcept>
-#include "../logic/Wall.h"
-#include "../logic/Air.h"
 
 StaticMapLayerConstructor::StaticMapLayerConstructor(const int width, const int height) :
     grid()
 {
     for (int horIndex = 0; horIndex < width; horIndex++)
     {
-        grid.append(QVector<bool>());
+        grid.append(QVector<StaticMapObject::Type>());
         for (int verIndex = 0; verIndex < height; verIndex++)
         {
-            grid[horIndex].append(false);
+            grid[horIndex].append(StaticMapObject::Type::AIR);
         }
     }
 }
 
-void StaticMapLayerConstructor::markCell(const int x, const int y)
+void StaticMapLayerConstructor::markCell(const int x, const int y, const StaticMapObject::Type type)
 {
     const int width = grid.size();
     const int height = grid[0].size();
@@ -27,7 +25,7 @@ void StaticMapLayerConstructor::markCell(const int x, const int y)
         throw std::invalid_argument("static object is out of bounds");
     }
 
-    grid[x][y] = true;
+    grid[x][y] = type;
 }
 
 StaticMapLayer * StaticMapLayerConstructor::construct() const
@@ -39,14 +37,7 @@ StaticMapLayer * StaticMapLayerConstructor::construct() const
         staticObjects.append(QVector<StaticMapObject*>());
         for (int verIndex = 0; verIndex < grid[0].size(); verIndex++)
         {
-            if (grid[horIndex][verIndex] == true)
-            {
-                staticObjects[horIndex].append(new Wall());
-            }
-            else
-            {
-                staticObjects[horIndex].append(new Air());
-            }
+            staticObjects[horIndex].append(new StaticMapObject(grid[horIndex][verIndex]));
         }
     }
 

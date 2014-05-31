@@ -8,15 +8,14 @@ SOURCES += \
     $$PWD/main/cppsrc/logic/Player.cpp \
     $$PWD/main/cppsrc/QmlMapInterface.cpp \
     $$PWD/main/cppsrc/MapObjectQmlWrapper.cpp \
-    $$PWD/main/cppsrc/logic/Wall.cpp \
     $$PWD/main/cppsrc/logic/StaticMapLayer.cpp \
     $$PWD/main/cppsrc/logic/DynamicMapLayer.cpp \
     $$PWD/main/cppsrc/json/JsonMapParser.cpp \
     $$PWD/main/cppsrc/json/StaticMapLayerConstructor.cpp \
-    $$PWD/main/cppsrc/logic/Air.cpp \
     $$PWD/main/cppsrc/logic/MapPhysics.cpp \
     $$PWD/main/cppsrc/logic/World.cpp \
-    $$PWD/main/cppsrc/logic/MapToolKit.cpp
+    $$PWD/main/cppsrc/logic/MapToolKit.cpp \
+    $$PWD/main/cppsrc/logic/util/StairsChecker.cpp
 
 HEADERS += \
     $$PWD/main/cppsrc/PlayerActionsQmlReceiver.h \
@@ -28,15 +27,14 @@ HEADERS += \
     $$PWD/main/cppsrc/QmlMapInterface.h \
     $$PWD/main/cppsrc/logic/StaticMapObject.h \
     $$PWD/main/cppsrc/MapObjectQmlWrapper.h \
-    $$PWD/main/cppsrc/logic/Wall.h \
     $$PWD/main/cppsrc/logic/StaticMapLayer.h \
     $$PWD/main/cppsrc/logic/DynamicMapLayer.h \
     $$PWD/main/cppsrc/logic/DynamicMapObjectGeometry.h \
     $$PWD/main/cppsrc/json/JsonObjectParser.h \
     $$PWD/main/cppsrc/json/JsonMapParser.h \
     $$PWD/main/cppsrc/json/StaticMapLayerConstructor.h \
-    $$PWD/main/cppsrc/logic/Air.h \
     $$PWD/main/cppsrc/logic/MapPhysics.h \
     $$PWD/main/cppsrc/logic/World.h \
     $$PWD/main/cppsrc/logic/Movement.h \
-    $$PWD/main/cppsrc/logic/MapToolKit.h
+    $$PWD/main/cppsrc/logic/MapToolKit.h \
+    $$PWD/main/cppsrc/logic/util/StairsChecker.h

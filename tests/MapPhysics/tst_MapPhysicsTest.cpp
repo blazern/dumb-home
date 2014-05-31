@@ -24,6 +24,12 @@ private Q_SLOTS:
     void playerFalls();
     void playerCantMoveWhileFalls();
     void speedIsCorrect();
+    void playerDoesntFallWhenOnStairs();
+    void playerCanGoUpWhenOnStairs();
+    void playerCanGoOnlyVerticallyWhenOnStairs();
+    void playerCanGoHorizontallyWhenOnBottomOfStairs();
+    void playerCantClimbOnStairsIfNotBetweenItsLeftAndRightSides();
+    void playerCanStayOnTopOfStairsWithoutFallByGravity();
 
 private:
     const JsonMapParser mapParser;
@@ -33,6 +39,10 @@ private:
     const QString jsonMapWithFallingPlayer;
     const QString longJsonMap;
     const QString jsonMapWithObstacles;
+    const QString mapWithStairsJson;
+    const QString mapWithPlayerOnBottomOfStairsJson;
+    const QString mapWithPlayerPartlyOnBottomOfStairsJson;
+    const QString mapWithPlayerOnTopOfStairsJson;
 };
 
 MapPhysicsTest::MapPhysicsTest() :
@@ -116,9 +126,147 @@ MapPhysicsTest::MapPhysicsTest() :
         R"(        ] }    ] )"
         R"(} )"),
     //represents:
-    // opoxoxo
-    // xxxxxxx
-    jsonMapWithObstacles(
+    // oooo
+    // xssx
+    // opso
+    // osso
+    // xxxx
+    // (player is in the middle of the stairs)
+    mapWithStairsJson(
+        R"({ )"
+        R"( "player": { )"
+        R"(        "x": 15, )"
+        R"(        "y": 20, )"
+        R"(        "width": 10, )"
+        R"(        "height": 10 )"
+        R"(    },)"
+        R"(    "staticObjectWidth": 10, )"
+        R"(    "staticObjectHeight": 10, )"
+        R"(    "staticLayerWidth": 4, )"
+        R"(    "staticLayerHeight": 5, )"
+        R"(    "rows": [ { )"
+        R"(        "y":1, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":2, "type": "stairs" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }, { )"
+        R"(        "y":2, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":3, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":4, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "wall" }, )"
+        R"(            { "x":2, "type": "wall" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }    ] )"
+        R"(} )"),
+    //represents:
+    // oooo
+    // xssx
+    // osso
+    // opso
+    // xxxx
+    // (player is on the bottom of the stairs)
+    mapWithPlayerOnBottomOfStairsJson(
+        R"({ )"
+        R"( "player": { )"
+        R"(        "x": 15, )"
+        R"(        "y": 30, )"
+        R"(        "width": 10, )"
+        R"(        "height": 10 )"
+        R"(    },)"
+        R"(    "staticObjectWidth": 10, )"
+        R"(    "staticObjectHeight": 10, )"
+        R"(    "staticLayerWidth": 4, )"
+        R"(    "staticLayerHeight": 5, )"
+        R"(    "rows": [ { )"
+        R"(        "y":1, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":2, "type": "stairs" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }, { )"
+        R"(        "y":2, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":3, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":4, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "wall" }, )"
+        R"(            { "x":2, "type": "wall" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }    ] )"
+        R"(} )"),
+    //represents:
+    // oooo
+    // xssx
+    // osso
+    // opso
+    // xxxx
+    // (player is partly on the bottom of the stairs)
+    mapWithPlayerPartlyOnBottomOfStairsJson(
+        R"({ )"
+        R"( "player": { )"
+        R"(        "x": 5, )"
+        R"(        "y": 30, )"
+        R"(        "width": 10, )"
+        R"(        "height": 10 )"
+        R"(    },)"
+        R"(    "staticObjectWidth": 10, )"
+        R"(    "staticObjectHeight": 10, )"
+        R"(    "staticLayerWidth": 4, )"
+        R"(    "staticLayerHeight": 5, )"
+        R"(    "rows": [ { )"
+        R"(        "y":1, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":2, "type": "stairs" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }, { )"
+        R"(        "y":2, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":3, )"
+        R"(        "cells": [ )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":4, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "wall" }, )"
+        R"(            { "x":2, "type": "wall" }, )"
+        R"(            { "x":3, "type": "wall" } )"
+        R"(        ] }    ] )"
+        R"(} )"),
+    //represents:
+    // opo
+    // xsx
+    // oso
+    // xxx
+    // (player is on stairs)
+    mapWithPlayerOnTopOfStairsJson(
         R"({ )"
         R"( "player": { )"
         R"(        "x": 10, )"
@@ -128,24 +276,24 @@ MapPhysicsTest::MapPhysicsTest() :
         R"(    },)"
         R"(    "staticObjectWidth": 10, )"
         R"(    "staticObjectHeight": 10, )"
-        R"(    "staticLayerWidth": 87, )"
-        R"(    "staticLayerHeight": 2, )"
+        R"(    "staticLayerWidth": 3, )"
+        R"(    "staticLayerHeight": 4, )"
         R"(    "rows": [ { )"
         R"(        "y":1, )"
         R"(        "cells": [ )"
-        R"(            { "x":0 }, )"
-        R"(            { "x":1 }, )"
-        R"(            { "x":2 }, )"
-        R"(            { "x":3 }, )"
-        R"(            { "x":4 }, )"
-        R"(            { "x":5 }, )"
-        R"(            { "x":6 }, )"
-        R"(            { "x":7 } )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "stairs" }, )"
+        R"(            { "x":2, "type": "wall" } )"
         R"(        ] }, { )"
-        R"(        "y":1, )"
+        R"(        "y":2, )"
         R"(        "cells": [ )"
-        R"(            { "x":3 }, )"
-        R"(            { "x":5 } )"
+        R"(            { "x":1, "type": "stairs" } )"
+        R"(        ] }, { )"
+        R"(        "y":3, )"
+        R"(        "cells": [ )"
+        R"(            { "x":0, "type": "wall" }, )"
+        R"(            { "x":1, "type": "wall" }, )"
+        R"(            { "x":2, "type": "wall" } )"
         R"(        ] }    ] )"
         R"(} )")
 {
@@ -276,6 +424,115 @@ void MapPhysicsTest::speedIsCorrect()
                                 finalPosition.x(),
                                 mapPhysics.getSpeed() / (1000 / timeToWait),
                                 allowedError));
+}
+
+void MapPhysicsTest::playerDoesntFallWhenOnStairs()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithStairsJson));
+    MapPhysics mapPhysics(*map);
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+
+    const QPointF finalPosition = player.getRect().topLeft();
+
+    QVERIFY(differenceIsCloseTo(initialPosition.y(), finalPosition.y(), 0));
+}
+
+void MapPhysicsTest::playerCanGoUpWhenOnStairs()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithStairsJson));
+    MapPhysics mapPhysics(*map);
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    mapPhysics.move(player, 90);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+
+    const QPointF finalPosition = player.getRect().topLeft();
+
+    QVERIFY(finalPosition.y() < initialPosition.y());
+}
+
+void MapPhysicsTest::playerCanGoOnlyVerticallyWhenOnStairs()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithStairsJson));
+    MapPhysics mapPhysics(*map);
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    mapPhysics.move(player, 0);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+    mapPhysics.stop(player);
+
+    const QPointF secondPosition = player.getRect().topLeft();
+    QVERIFY(differenceIsCloseTo(initialPosition.x(), secondPosition.x(), 0));
+
+    mapPhysics.move(player, 180);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+    mapPhysics.stop(player);
+
+    const QPointF thirdPosition = player.getRect().topLeft();
+    QVERIFY(differenceIsCloseTo(secondPosition.x(), thirdPosition.x(), 0));
+}
+
+void MapPhysicsTest::playerCanGoHorizontallyWhenOnBottomOfStairs()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithPlayerOnBottomOfStairsJson));
+    MapPhysics mapPhysics(*map);
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    mapPhysics.move(player, 0);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+    mapPhysics.stop(player);
+
+    const QPointF secondPosition = player.getRect().topLeft();
+    QVERIFY(initialPosition.x() < secondPosition.x());
+
+    mapPhysics.move(player, 180);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+    mapPhysics.stop(player);
+
+    const QPointF thirdPosition = player.getRect().topLeft();
+    QVERIFY(secondPosition.x() > thirdPosition.x());
+}
+
+void MapPhysicsTest::playerCantClimbOnStairsIfNotBetweenItsLeftAndRightSides()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithPlayerPartlyOnBottomOfStairsJson));
+    MapPhysics mapPhysics(*map);
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    mapPhysics.move(player, 90);
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+
+    const QPointF finalPosition = player.getRect().topLeft();
+
+    QVERIFY(differenceIsCloseTo(finalPosition.y(), initialPosition.y(), 0));
+}
+
+void MapPhysicsTest::playerCanStayOnTopOfStairsWithoutFallByGravity()
+{
+    QSharedPointer<Map> map(mapParser.parseFromString(mapWithPlayerOnTopOfStairsJson));
+
+    const Player & player = map->getDynamicLayer().getPlayer();
+    const QPointF initialPosition = player.getRect().topLeft();
+
+    MapPhysics mapPhysics(*map);
+
+    QTest::qWait(mapPhysics.getTimeBetweenMoments() * 2);
+
+    const QPointF finalPosition = player.getRect().topLeft();
+
+    QVERIFY(differenceIsCloseTo(initialPosition.y(), finalPosition.y(), 0));
 }
 
 bool MapPhysicsTest::differenceIsCloseTo(const qreal value1, const qreal value2, const int to)

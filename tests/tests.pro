@@ -2,4 +2,5 @@ TEMPLATE = subdirs
 
 SUBDIRS += \
     JsonMapParser \
-    MapPhysics
+    MapPhysics \
+    StaticMapLayer
