@@ -17,23 +17,23 @@ Item {
             anchors.fill: parent
             onPressed: {
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) <= 0) &&
-                        (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) >= 0)){
+                       ((mouseY + (windowHeight * mouseX - (windowWidth * windowWidth))/windowWidth) <= 0)){
+                   playerActionsReceiver.onMoveRequested(direction_down);
+                }
+
+                if (((mouseY - (windowHeight/windowWidth)*mouseX) <= 0) &&
+                       ((mouseY + (windowHeight * mouseX - (windowWidth * windowWidth))/windowWidth) >= 0)){
                    playerActionsReceiver.onMoveRequested(direction_right);
                 }
 
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) >= 0) &&
-                        (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) >= 0)){
-                   playerActionsReceiver.onMoveRequested(direction_down);
+                       ((mouseY + (windowHeight * mouseX - (windowWidth * windowWidth))/windowWidth) >= 0)){
+                   playerActionsReceiver.onMoveRequested(direction_up);
                 }
 
                 if (((mouseY - (windowHeight/windowWidth)*mouseX) >= 0) &&
-                        (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) <= 0)){
+                       ((mouseY + (windowHeight * mouseX - (windowWidth * windowWidth))/windowWidth) <= 0)){
                    playerActionsReceiver.onMoveRequested(direction_left);
-                }
-
-                if (((mouseY - (windowHeight/windowWidth)*mouseX) <= 0) &&
-                        (mouseY - (windowWidth/(-windowHeight)*(mouseX - windowWidth)) <= 0)){
-                   playerActionsReceiver.onMoveRequested(direction_up);
                 }
             }
             onReleased: {
