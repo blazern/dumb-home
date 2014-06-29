@@ -37,6 +37,8 @@ Item {
 
 
     SensorControls {
+        windowWidth: parent.width
+        windowHeight: parent.height
     }
 
     Keys.onPressed: {
