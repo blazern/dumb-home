@@ -35,7 +35,7 @@ private:
     QTimer momentsTimer;
     qreal speed; /// per second
 
-    static constexpr int timeBetweenMoments = 10;
+    static constexpr int TIME_BETWEEN_MOMENTS = 10;
 
     QVector<const Movement*> movements;
     QVector<const DynamicMapObject*> objectsInAir;

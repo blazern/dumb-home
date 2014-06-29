@@ -15,7 +15,11 @@ SOURCES += \
     $$PWD/main/cppsrc/logic/MapPhysics.cpp \
     $$PWD/main/cppsrc/logic/World.cpp \
     $$PWD/main/cppsrc/logic/MapToolKit.cpp \
-    $$PWD/main/cppsrc/logic/util/StairsChecker.cpp
+    $$PWD/main/cppsrc/logic/util/StairsChecker.cpp \
+    $$PWD/main/cppsrc/gen/StaticMapLayerGenerator.cpp \
+    $$PWD/main/cppsrc/gen/RoomGenerator.cpp \
+    $$PWD/main/cppsrc/gen/StoreyGenerator.cpp \
+    $$PWD/main/cppsrc/util/LineDivider.cpp
 
 HEADERS += \
     $$PWD/main/cppsrc/PlayerActionsQmlReceiver.h \
@@ -37,4 +41,9 @@ HEADERS += \
     $$PWD/main/cppsrc/logic/World.h \
     $$PWD/main/cppsrc/logic/Movement.h \
     $$PWD/main/cppsrc/logic/MapToolKit.h \
-    $$PWD/main/cppsrc/logic/util/StairsChecker.h
+    $$PWD/main/cppsrc/logic/util/StairsChecker.h \
+    $$PWD/main/cppsrc/gen/StaticMapLayerGenerator.h \
+    $$PWD/main/cppsrc/gen/RoomGenerator.h \
+    $$PWD/main/cppsrc/gen/StoreyGenerator.h \
+    $$PWD/main/cppsrc/util/LineDivider.h \
+    $$PWD/main/cppsrc/gen/Minimums.h

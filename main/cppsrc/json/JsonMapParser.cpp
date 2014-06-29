@@ -68,11 +68,15 @@ Map * JsonMapParser::parseJsonObject(const QJsonObject & mapAsJson) const
         }
         else
         {
+            delete dynamicMapLayer;
+            delete staticMapLayer;
             throw std::invalid_argument("staticObjectWidth or/and staticObjectHeight are not double");
         }
     }
     else
     {
+        delete dynamicMapLayer;
+        delete staticMapLayer;
         throw std::invalid_argument("the JSON-file doesn't contain staticObjectWidth or/and staticObjectHeight properties");
     }
 }

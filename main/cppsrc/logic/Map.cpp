@@ -13,18 +13,25 @@ Map::Map(StaticMapLayer * const staticLayer,
 {
     if (staticLayer == nullptr || dynamicLayer == nullptr)
     {
+        freeResources();
         throw new std::invalid_argument("layers must not be nullptr");
     }
     else if (staticMapObjectWidth <= 0 || staticObjectHeight <= 0)
     {
+        freeResources();
         throw new std::invalid_argument("static map object size is invalid");
     }
 }
 
-Map::~Map()
+void Map::freeResources()
 {
     delete staticLayer;
     delete dynamicLayer;
+}
+
+Map::~Map()
+{
+    freeResources();
 }
 
 const StaticMapLayer & Map::getStaticLayer() const

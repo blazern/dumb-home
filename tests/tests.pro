@@ -3,4 +3,7 @@ TEMPLATE = subdirs
 SUBDIRS += \
     JsonMapParser \
     MapPhysics \
-    StaticMapLayer
+    StaticMapLayer \
+    StaticMapLayerGenerator \
+    RoomGenerator \
+    StoreyGenerator

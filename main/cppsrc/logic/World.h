@@ -15,6 +15,8 @@ public:
     MapPhysics & getMapPhysics();
 
 private:
+    void freeResources();
+
     Map * const map;
     MapPhysics * const mapPhysics;
 };

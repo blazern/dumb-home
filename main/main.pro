@@ -9,6 +9,7 @@ QML_IMPORT_PATH =
 
 # The .cpp file which was generated for your project. Feel free to hack it.
 SOURCES += main.cpp
+
 include(../common.pri)
 
 # Installation path
@@ -23,3 +24,4 @@ RESOURCES = resources/resources.qrc
 OTHER_FILES += \
     qmlsrc/code-if-wanna-live/MapObjects.js \
     qmlsrc/code-if-wanna-live/MapObject.qml
+

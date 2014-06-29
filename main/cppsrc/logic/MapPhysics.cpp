@@ -35,7 +35,7 @@ MapPhysics::MapPhysics(Map & map, QObject * parent) :
             this, &MapPhysics::onMomentsTimerTimeout);
 
     momentsTimer.setSingleShot(false);
-    momentsTimer.setInterval(timeBetweenMoments);
+    momentsTimer.setInterval(TIME_BETWEEN_MOMENTS);
     momentsTimer.start();
 }
 

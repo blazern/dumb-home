@@ -9,6 +9,11 @@
 
 StaticMapLayer::~StaticMapLayer()
 {
+    freeResources();
+}
+
+void StaticMapLayer::freeResources()
+{
     for (auto horIterator = staticObjects.begin(); horIterator != staticObjects.end(); horIterator++)
     {
         for (auto verIterator = horIterator->begin(); verIterator != horIterator->end(); verIterator++)
@@ -21,7 +26,15 @@ StaticMapLayer::~StaticMapLayer()
 StaticMapLayer::StaticMapLayer(const QVector<QVector<StaticMapObject*>> & staticObjects) :
     staticObjects(staticObjects)
 {
-    checkArguments(staticObjects);
+    try
+    {
+        checkArguments(staticObjects);
+    }
+    catch(...)
+    {
+        freeResources();
+        throw;
+    }
 }
 
 void StaticMapLayer::checkArguments(const QVector<QVector<StaticMapObject*>> & staticObjects) const
