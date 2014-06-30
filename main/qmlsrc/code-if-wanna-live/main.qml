@@ -14,6 +14,7 @@ Item {
     property int direction_left: 3
 
     property int playerId: -1
+    property int playerWidth: -1
     property int oldWindowWidth: width
     property int oldWindowHeight: height
 
@@ -33,10 +34,6 @@ Item {
             mapObject.y += (height - oldWindowHeight)/2;
         }
         oldWindowHeight = height;
-    }
-
-
-    SensorControls {
     }
 
     Keys.onPressed: {
@@ -96,6 +93,7 @@ Item {
                 playerId = mapObject.id;
                 playerX = mapObject.x;
                 playerY = mapObject.y;
+                playerWidth = mapObject.width;
             }
         }
 
@@ -104,6 +102,12 @@ Item {
             mapObject.x += (container.width/2 - playerX);
             mapObject.y += (container.height/2 - playerY);
         }
+    }
+
+    SensorControls {
+        windowWidth: parent.width
+        windowHeight: parent.height
+        playerWidth: parent.playerWidth
     }
 
     Component.onCompleted: {
