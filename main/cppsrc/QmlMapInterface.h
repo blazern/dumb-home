@@ -16,12 +16,16 @@ public:
 
     void setMap(const Map & map);
 
-    Q_INVOKABLE int getWidth() const;
-    Q_INVOKABLE int getHeight() const;
     Q_INVOKABLE bool isMapSetUp() const;
-    Q_INVOKABLE int getObjectsCount() const;
-    Q_INVOKABLE MapObjectQmlWrapper * getMapObject(const int index);
     Q_INVOKABLE unsigned int getPlayerId() const;
+    Q_INVOKABLE MapObjectQmlWrapper * getObjectById(const unsigned int id);
+
+    Q_INVOKABLE int getObjectsCount() const;
+    Q_INVOKABLE MapObjectQmlWrapper * getObject(const int index);
+    Q_INVOKABLE int getStaticObjectsCount() const;
+    Q_INVOKABLE MapObjectQmlWrapper * getStaticObject(const int index);
+    Q_INVOKABLE int getDynamicObjectsCount() const;
+    Q_INVOKABLE MapObjectQmlWrapper * getDynamicObject(const int index);
 
     virtual void onObjectChangedPosition(
             const DynamicMapObject & object,
@@ -40,9 +44,12 @@ signals:
 private:
     const Map * map;
     unsigned int playerId;
-    QVector<QSharedPointer<MapObjectQmlWrapper>> mapObjects;
+    QVector<QSharedPointer<MapObjectQmlWrapper>> staticMapObjects;
+    QVector<QSharedPointer<MapObjectQmlWrapper>> dynamicMapObjects;
 
     void refillMapObjects();
+    void refillStaticMapObjects();
+    void refillDynamicMapObjects();
 };
 
 #endif // QMLMAPINTERFACE_H

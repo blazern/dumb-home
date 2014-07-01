@@ -90,7 +90,7 @@ Item {
         var playerX = 0;
         var playerY = 0;
         for (var index = 0; index < qmlMapInterface.getObjectsCount(); index++) {
-            var mapObject = qmlMapInterface.getMapObject(index);
+            var mapObject = qmlMapInterface.getObject(index);
             MapObjects.add(createElementFrom(mapObject));
             if (mapObject.id === qmlMapInterface.getPlayerId()) {
                 playerId = mapObject.id;
@@ -128,12 +128,12 @@ Item {
                     var yOffset = newY - oldY;
                     if (mapObject.mapObjectId !== id) {
                         //Move Right/Left
-                        if(xOffset != 0){
+                        if (xOffset != 0) {
                             mapObject.x -= xOffset;
                         }
 
                         //Move Up/Down
-                        if(yOffset != 0){
+                        if (yOffset != 0) {
                             mapObject.y -= yOffset;
                         }
                     }

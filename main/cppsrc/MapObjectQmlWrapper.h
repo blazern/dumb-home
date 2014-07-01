@@ -38,7 +38,6 @@ public:
 private:
     static unsigned int nextId;
 
-private:
     const unsigned int id;
     const QColor color;
     const DynamicMapObject * const dynamicMapObject;
