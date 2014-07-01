@@ -11,7 +11,8 @@ QmlMapInterface::QmlMapInterface(QObject * parent) :
     MapPhysicsListener(),
     map(nullptr),
     playerId(0),
-    mapObjects()
+    staticMapObjects(),
+    dynamicMapObjects()
 {
 }
 
@@ -27,8 +28,14 @@ void QmlMapInterface::setMap(const Map & map)
 void QmlMapInterface::refillMapObjects()
 {
     playerId = 0;
-    mapObjects.clear();
+    staticMapObjects.clear();
+    refillStaticMapObjects();
+    dynamicMapObjects.clear();
+    refillDynamicMapObjects();
+}
 
+void QmlMapInterface::refillStaticMapObjects()
+{
     const int mapWidth = map->getStaticLayer().getWidth();
     const int mapHeight = map->getStaticLayer().getHeight();
     const StaticMapLayer & staticMapLayer = map->getStaticLayer();
@@ -61,7 +68,7 @@ void QmlMapInterface::refillMapObjects()
                     break;
                 }
 
-                mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
+                staticMapObjects.append(QSharedPointer<MapObjectQmlWrapper>(
                                       new MapObjectQmlWrapper(
                                           mapObject,
                                           map->getRectOfStaticObjectWith(widthIndex, heightIndex),
@@ -70,7 +77,10 @@ void QmlMapInterface::refillMapObjects()
             }
         }
     }
+}
 
+void QmlMapInterface::refillDynamicMapObjects()
+{
     const DynamicMapLayer & dynamicMapLayer = map->getDynamicLayer();
 
     for (auto iterator = dynamicMapLayer.constBegin(); iterator != dynamicMapLayer.constEnd(); iterator++)
@@ -78,23 +88,13 @@ void QmlMapInterface::refillMapObjects()
         const QSharedPointer<DynamicMapObjectGeometry> & mapObjectGeometry = *iterator;
 
         const DynamicMapObject & mapObject = *mapObjectGeometry->getObject();
-        mapObjects.append(QSharedPointer<MapObjectQmlWrapper>(new MapObjectQmlWrapper(mapObject, this)));
+        dynamicMapObjects.append(QSharedPointer<MapObjectQmlWrapper>(new MapObjectQmlWrapper(mapObject, this)));
 
         if (&mapObject == &(dynamicMapLayer.getPlayer()))
         {
-            playerId = mapObjects.last()->getId();
+            playerId = dynamicMapObjects.last()->getId();
         }
     }
-}
-
-int QmlMapInterface::getWidth() const
-{
-    return map != nullptr ? map->getStaticLayer().getWidth() : 0;
-}
-
-int QmlMapInterface::getHeight() const
-{
-    return map != nullptr ? map->getStaticLayer().getHeight() : 0;
 }
 
 bool QmlMapInterface::isMapSetUp() const
@@ -102,25 +102,65 @@ bool QmlMapInterface::isMapSetUp() const
     return map != nullptr;
 }
 
-int QmlMapInterface::getObjectsCount() const
-{
-    return mapObjects.size();
-}
-
-MapObjectQmlWrapper * QmlMapInterface::getMapObject(const int index)
-{
-    return mapObjects[index].data();
-}
-
 unsigned int QmlMapInterface::getPlayerId() const
 {
     return playerId;
 }
 
+MapObjectQmlWrapper * QmlMapInterface::getObjectById(const unsigned int id)
+{
+    for (int index = 0; index < getObjectsCount(); index++)
+    {
+        MapObjectQmlWrapper * currentObject = getObject(index);
+        if (currentObject->getId() == id)
+        {
+            return currentObject;
+        }
+    }
+    return nullptr;
+}
+
+int QmlMapInterface::getObjectsCount() const
+{
+    return staticMapObjects.size() + dynamicMapObjects.size();
+}
+
+MapObjectQmlWrapper * QmlMapInterface::getObject(const int index)
+{
+    if (index < staticMapObjects.size())
+    {
+        return staticMapObjects[index].data();
+    }
+    else
+    {
+        return dynamicMapObjects[index - staticMapObjects.size()].data();
+    }
+}
+
+int QmlMapInterface::getStaticObjectsCount() const
+{
+    return staticMapObjects.size();
+}
+
+MapObjectQmlWrapper * QmlMapInterface::getStaticObject(const int index)
+{
+    return staticMapObjects[index].data();
+}
+
+int QmlMapInterface::getDynamicObjectsCount() const
+{
+    return dynamicMapObjects.size();
+}
+
+MapObjectQmlWrapper * QmlMapInterface::getDynamicObject(const int index)
+{
+    return dynamicMapObjects[index].data();
+}
+
 void QmlMapInterface::onObjectChangedPosition(const DynamicMapObject & object, const QPointF & oldPosition, const QPointF & newPosition)
 {
     unsigned int id = 0;
-    for (auto iterator = mapObjects.begin(); iterator != mapObjects.end(); iterator++)
+    for (auto iterator = dynamicMapObjects.begin(); iterator != dynamicMapObjects.end(); iterator++)
     {
         const MapObjectQmlWrapper & mapObjectQmlWrapper = **iterator;
         if (mapObjectQmlWrapper.isMadeFor(object))
