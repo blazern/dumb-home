@@ -17,7 +17,7 @@ public:
     // some stairs end without 2 walls on both sides
     // some stairs are on edge of map
     // some stairs end right beneath a wall
-    explicit StaticMapLayer(const QVector<QVector<StaticMapObject*>> & staticObjects);
+    explicit StaticMapLayer(const QVector<QVector<StaticMapObject *>> & staticObjects);
     ~StaticMapLayer();
 
     int getWidth() const;
@@ -26,13 +26,14 @@ public:
     StaticMapObject & get(const int x, const int y);
 
 private:
-    QVector<QVector<StaticMapObject*>> staticObjects;
+    QVector<QVector<StaticMapObject *>> staticObjects;
 
 private:
-    void checkArguments(const QVector<QVector<StaticMapObject*>> & staticObjects) const;
-    void checkSizes(const QVector<QVector<StaticMapObject*>> & staticObjects) const;
-    void checkForNullptr(const QVector<QVector<StaticMapObject*>> & staticObjects) const;
-    void checkStairs(const QVector<QVector<StaticMapObject*>> & staticObjects) const;
+    void freeResources();
+    void checkArguments(const QVector<QVector<StaticMapObject *>> & staticObjects) const;
+    void checkSizes(const QVector<QVector<StaticMapObject *>> & staticObjects) const;
+    void checkForNullptr(const QVector<QVector<StaticMapObject *>> & staticObjects) const;
+    void checkStairs(const QVector<QVector<StaticMapObject *>> & staticObjects) const;
 };
 
 #endif // STATICMAPLAYER_H

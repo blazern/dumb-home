@@ -4,6 +4,8 @@
 #include <QQuickItem>
 #include <QUrl>
 #include <QDir>
+#include <QTime>
+#include <QStringList>
 #include "cppsrc/qtquick2applicationviewer/qtquick2applicationviewer.h"
 #include "cppsrc/PlayerActionsQmlReceiver.h"
 #include "cppsrc/QmlMapInterface.h"
@@ -12,6 +14,7 @@
 #include "cppsrc/json/JsonMapParser.h"
 #include "cppsrc/logic/MapPhysics.h"
 #include "cppsrc/logic/World.h"
+#include "cppsrc/gen/StaticMapLayerGenerator.h"
 
 #ifdef QT_DEBUG
 #include <QDebug>
@@ -19,10 +22,28 @@
 
 Map * createMap()
 {
-    const JsonMapParser mapParser;
+    const QStringList arguments = QGuiApplication::arguments();
+    bool shouldReadMapFromFile = false;
+
+    if (arguments.size() > 1 && arguments[1] == "--from_file")
+    {
+        shouldReadMapFromFile = true;
+    }
+
     try
     {
-        return mapParser.parseFromFile(":/map.json");
+        if (shouldReadMapFromFile)
+        {
+            const JsonMapParser mapParser;
+            return mapParser.parseFromFile(":/map.json");
+        }
+        else
+        {
+            StaticMapLayerGenerator generator(30, 20);
+            StaticMapLayer * staticLayer = generator.generate();
+            DynamicMapLayer * dynamicLayer = new DynamicMapLayer(QRectF(20, 20, 10, 10));
+            return new Map(staticLayer, dynamicLayer, 10, 10);
+        }
     }
     catch (std::invalid_argument & exception)
     {
@@ -31,8 +52,10 @@ Map * createMap()
     }
 }
 
-int main(int argc, char *argv[])
+int main(int argc, char * argv[])
 {
+    qsrand(QTime::currentTime().msec());
+
     qmlRegisterType<QmlMapInterface>("DumbHome", 1, 0, "QmlMapInterface");
     qmlRegisterType<MapObjectQmlWrapper>("DumbHome", 1, 0, "MapObjectQmlWrapper");
 

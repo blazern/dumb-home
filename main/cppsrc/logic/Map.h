@@ -31,6 +31,8 @@ public:
     DynamicMapLayer & getDynamicLayer();
 
 private:
+    void freeResources();
+
     StaticMapLayer * const staticLayer;
     const qreal staticMapObjectWidth;
     const qreal staticMapObjectHeight;
