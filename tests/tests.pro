@@ -7,3 +7,4 @@ SUBDIRS += \
     StaticMapLayerGenerator \
     RoomGenerator \
     StoreyGenerator
+фыв
